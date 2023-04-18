@@ -68,17 +68,15 @@ const LandingPage = (props: Props): React.Node => {
 
         PostAPI.questions
             .submitQuestion(question, 'GPT Turbo')
-            .promise.then(response => {
+            .promise.then((response) => {
                 console.log('Response:', response);
                 setResponse(response);
                 setLoading(false);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log('Error asking question:', error);
                 setErrorMessage(
-                    error?.message
-                        ? 'Error: ' + error?.message
-                        : 'Error asking question'
+                    error ? JSON.stringify(error) : 'Error asking question'
                 );
                 setResponse(null);
                 setLoading(false);
@@ -86,7 +84,7 @@ const LandingPage = (props: Props): React.Node => {
     };
 
     React.useEffect(() => {
-        const handleKeyDown = e => {
+        const handleKeyDown = (e) => {
             if (e.key === 'Enter' && !loading && question) {
                 handleAskQuestion();
             }
@@ -99,7 +97,7 @@ const LandingPage = (props: Props): React.Node => {
         };
     }, [loading, question]);
 
-    const handleFileUpload = files => {
+    const handleFileUpload = (files) => {
         setUploadedFiles([]);
         setFailedFiles({});
         setErrorMessage('');
@@ -107,13 +105,13 @@ const LandingPage = (props: Props): React.Node => {
 
         PostAPI.upload
             .uploadFiles(files)
-            .promise.then(response => {
+            .promise.then((response) => {
                 console.log('Response:', response);
                 setUploadedFiles(response.successful_file_names ?? []);
                 setFailedFiles(response.failed_file_names ?? {});
                 setLoading(false);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log('Error uploading files:', error);
                 setErrorMessage(
                     error?.message
@@ -161,7 +159,7 @@ const LandingPage = (props: Props): React.Node => {
                             <input
                                 type="text"
                                 value={question}
-                                onChange={e => setQuestion(e.target.value)}
+                                onChange={(e) => setQuestion(e.target.value)}
                                 placeholder="Enter your question here..."
                             />
                             <button
