@@ -24,6 +24,8 @@ import (
 
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
+
+	"github.com/joho/godotenv"
 )
 
 const (
@@ -43,6 +45,7 @@ var (
 )
 
 func main() {
+	godotenv.Load()
 	// Parse command line flags + override defaults
 	flag.Parse()
 	siteConfig["DEBUG_SITE"] = strconv.FormatBool(*debugSite)
