@@ -3,6 +3,19 @@
 // Handy helpers + caching for Nugbase Post API
 
 import Promises from './Promises';
+import { v4 as uuidv4 } from 'uuid'; // <-- Import the uuid package
+
+function getOrCreateUUID() {
+    const localStorageKey = 'userUUID';
+    let userUUID = localStorage.getItem(localStorageKey);
+
+    if (!userUUID) {
+        userUUID = uuidv4(); // Generate a new UUID
+        localStorage.setItem(localStorageKey, userUUID); // Save the new UUID to local storage
+    }
+
+    return userUUID;
+}
 
 import TimedLocalStorage from './TimedLocalStorage';
 const API_TIMEOUT = 1000 * 60 * 10; // 10 min in ms
@@ -14,8 +27,11 @@ const questions = {
             data.append('question', question);
             data.append('model', model);
 
+            const uuid = getOrCreateUUID(); // <-- Generate a UUID
+            data.append('uuid', uuid); // <-- Append the UUID to the FormData object
+
             const timeoutID = setTimeout(
-                function() {
+                function () {
                     console.log('[/api/questions] Timeout:', question);
                     reject(new Error('Timeout'));
                 }.bind(this),
@@ -69,9 +85,15 @@ const upload = {
     uploadFiles: (files: Array<File>): Promise<any> => {
         const resultPromise = new Promise((resolve: any, reject: any) => {
             var data = new FormData();
-            files.forEach(file => {
+            files.forEach((file) => {
                 data.append('files', file);
             });
+
+            // Generate a UUID and append it to the FormData object
+            const uuid = getOrCreateUUID(); // <-- Generate a UUID
+            data.append('uuid', uuid); // <-- Append the UUID to the FormData object
+
+            console.log('[/upload] Added uuid:', { uuid });
 
             const timeoutID = setTimeout(() => {
                 console.log('[/upload] Timeout:', files);

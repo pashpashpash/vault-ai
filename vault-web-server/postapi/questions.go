@@ -30,6 +30,7 @@ func QuestionHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("[QuestionHandler] Question:", form.Question)
 	log.Println("[QuestionHandler] Model:", form.Model)
+	log.Println("[QuestionHandler] UUID:", form.UUID)
 
 	// step 1: Feed question to openai embeddings api to get an embedding back
 	questionEmbedding, err := getEmbedding(form.Question, openai.AdaEmbeddingV2)
@@ -38,10 +39,10 @@ func QuestionHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	log.Println("[QuestionHandler] Question Embedding:\n", questionEmbedding)
+	log.Println("[QuestionHandler] Question Embedding Length:", len(questionEmbedding))
 
 	// step 2: Query Pinecone using questionEmbedding to get context matches
-	matches, err := retrieve(questionEmbedding, 3)
+	matches, err := retrieve(questionEmbedding, 3, form.UUID)
 	if err != nil {
 		log.Println("[QuestionHandler ERR] Pinecone query error\n", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)

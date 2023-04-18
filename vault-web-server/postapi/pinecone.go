@@ -19,7 +19,7 @@ type PineconeVector struct {
 	Metadata map[string]string `json:"metadata,omitempty"`
 }
 
-func upsertEmbeddingsToPinecone(embeddings [][]float32, chunks []Chunk) error {
+func upsertEmbeddingsToPinecone(embeddings [][]float32, chunks []Chunk, uuid string) error {
 	// Prepare URL
 	url := PINECONE_API_ENDPOINT + "/vectors/upsert"
 
@@ -54,12 +54,12 @@ func upsertEmbeddingsToPinecone(embeddings [][]float32, chunks []Chunk) error {
 			Namespace string           `json:"namespace"`
 		}{
 			Vectors:   vectors[i:end],
-			Namespace: "",
+			Namespace: uuid,
 		})
 		if err != nil {
 			return err
 		}
-
+		log.Println("[upsertEmbeddingsToPinecone] Created pinecone upsert request with namespace = ", uuid)
 		// Create HTTP request
 		req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
 		if err != nil {
@@ -111,12 +111,12 @@ type PineconeQueryResponse struct {
 	Results []PineconeQueryResponseResult `json:"results"`
 }
 
-func retrieve(questionEmbedding []float32, topK int) ([]PineconeQueryMatch, error) {
+func retrieve(questionEmbedding []float32, topK int, uuid string) ([]PineconeQueryMatch, error) {
 	// Prepare the Pinecone query request
 	requestBody, _ := json.Marshal(PineconeQueryRequest{
 		TopK:            topK,
 		IncludeMetadata: true,
-		Namespace:       "",
+		Namespace:       uuid,
 		Queries: []PineconeQueryItem{
 			{
 				Values: questionEmbedding,
@@ -124,7 +124,7 @@ func retrieve(questionEmbedding []float32, topK int) ([]PineconeQueryMatch, erro
 		},
 	})
 
-	log.Printf("[pinecone retrieve] Request body:\n\n%s\n\n", requestBody)
+	log.Println("[retrieve] Querying pinecone namespace:", uuid)
 	// Send the Pinecone query request
 	pineconeIndexURL := PINECONE_API_ENDPOINT + "/query"
 	req, _ := http.NewRequest("POST", pineconeIndexURL, bytes.NewBuffer(requestBody))

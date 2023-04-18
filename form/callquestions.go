@@ -8,6 +8,7 @@ import (
 type QuestionForm struct {
 	Question string `schema:"question"`
 	Model    string `schema:model`
+	UUID     string `schema:uuid`
 }
 
 func (me *QuestionForm) Validate() errorlist.Errors {

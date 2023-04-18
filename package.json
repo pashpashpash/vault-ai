@@ -29,7 +29,8 @@
     "react-dropzone": "^14.2.3",
     "react-router-dom": "4.3.1",
     "stream-http": "3.2.0",
-    "url-parse": "^1.5.10"
+    "url-parse": "^1.5.10",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

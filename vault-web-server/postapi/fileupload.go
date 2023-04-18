@@ -45,6 +45,10 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	files := r.MultipartForm.File["files"]
+	uuid := r.FormValue("uuid") // Get the UUID from the form data
+
+	log.Println("[UploadHandler] UUID=", uuid)
+
 	responseData := UploadResponse{
 		SuccessfulFileNames: make([]string, 0),
 		FailedFileNames:     make(map[string]string),
@@ -121,7 +125,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Embeddings length: %d\n", len(embeddings[0]))
 
 		// Call the upsertEmbeddingsToPinecone function
-		err = upsertEmbeddingsToPinecone(embeddings, chunks)
+		err = upsertEmbeddingsToPinecone(embeddings, chunks, uuid)
 		if err != nil {
 			errMsg := fmt.Sprintf("Error upserting embeddings to Pinecone: %v", err)
 			log.Println("[UploadHandler ERR]", errMsg)
