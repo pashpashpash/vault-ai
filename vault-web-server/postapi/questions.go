@@ -31,9 +31,16 @@ func QuestionHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("[QuestionHandler] Question:", form.Question)
 	log.Println("[QuestionHandler] Model:", form.Model)
 	log.Println("[QuestionHandler] UUID:", form.UUID)
+	log.Println("[QuestionHandler] ApiKey:", form.ApiKey)
+
+	clientToUse := DEFAULT_OPENAI_CLIENT
+	if form.ApiKey != "" {
+		log.Println("[QuestionHandler] Using provided custom API key:", form.ApiKey)
+		clientToUse = openai.NewClient(form.ApiKey)
+	}
 
 	// step 1: Feed question to openai embeddings api to get an embedding back
-	questionEmbedding, err := getEmbedding(form.Question, openai.AdaEmbeddingV2)
+	questionEmbedding, err := getEmbedding(clientToUse, form.Question, openai.AdaEmbeddingV2)
 	if err != nil {
 		log.Println("[QuestionHandler ERR] OpenAI get embedding request error\n", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -77,7 +84,7 @@ func QuestionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("[QuestionHandler] Sending OpenAI api request...\nPrompt:%s\n", prompt)
-	openAIResponse, tokens, err := callOpenAI(prompt, model,
+	openAIResponse, tokens, err := callOpenAI(clientToUse, prompt, model,
 		"You are a helpful assistant answering questions based on the context provided.",
 		512)
 

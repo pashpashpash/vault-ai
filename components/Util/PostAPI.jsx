@@ -5,7 +5,7 @@
 import Promises from './Promises';
 import { v4 as uuidv4 } from 'uuid'; // <-- Import the uuid package
 
-function getOrCreateUUID() {
+const getOrCreateUUID = () => {
     const localStorageKey = 'userUUID';
     let userUUID = localStorage.getItem(localStorageKey);
 
@@ -15,7 +15,17 @@ function getOrCreateUUID() {
     }
 
     return userUUID;
-}
+};
+
+const getCustomOpenAPIKey = () => {
+    let key = localStorage.getItem('openai-api-key');
+
+    if (!key) {
+        return '';
+    }
+
+    return key;
+};
 
 import TimedLocalStorage from './TimedLocalStorage';
 const API_TIMEOUT = 1000 * 60 * 10; // 10 min in ms
@@ -26,6 +36,7 @@ const questions = {
             var data = new FormData();
             data.append('question', question);
             data.append('model', model);
+            data.append('apikey', getCustomOpenAPIKey());
 
             const uuid = getOrCreateUUID(); // <-- Generate a UUID
             data.append('uuid', uuid); // <-- Append the UUID to the FormData object
@@ -88,6 +99,7 @@ const upload = {
             files.forEach((file) => {
                 data.append('files', file);
             });
+            data.append('apikey', getCustomOpenAPIKey());
 
             // Generate a UUID and append it to the FormData object
             const uuid = getOrCreateUUID(); // <-- Generate a UUID

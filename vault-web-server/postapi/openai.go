@@ -29,7 +29,8 @@ type OpenAIResponse struct {
 	Tokens   int    `json:"tokens"`
 }
 
-func callOpenAI(prompt string, model string, instructions string, maxTokens int) (string, int, error) {
+func callOpenAI(client *openai.Client, prompt string, model string,
+	instructions string, maxTokens int) (string, int, error) {
 	// set request details
 	temperature := float32(0.7)
 	topP := float32(1.0)
@@ -42,17 +43,17 @@ func callOpenAI(prompt string, model string, instructions string, maxTokens int)
 	var err error
 	if model == openai.GPT3TextDavinci003 {
 		prompt = "System Instructions:\n" + instructions + "\n\nPrompt:\n" + prompt
-		assistantMessage, tokens, err = useCompletionAPI(prompt, model, temperature,
+		assistantMessage, tokens, err = useCompletionAPI(client, prompt, model, temperature,
 			maxTokens, topP, frequencyPenalty, presencePenalty, stop)
 	} else {
-		assistantMessage, tokens, err = useChatCompletionAPI(prompt, model, instructions, temperature,
+		assistantMessage, tokens, err = useChatCompletionAPI(client, prompt, model, instructions, temperature,
 			maxTokens, topP, frequencyPenalty, presencePenalty, stop)
 	}
 
 	return assistantMessage, tokens, err
 }
 
-func useChatCompletionAPI(prompt, modelParam string, instructions string, temperature float32, maxTokens int, topP float32, frequencyPenalty, presencePenalty float32, stop []string) (string, int, error) {
+func useChatCompletionAPI(client *openai.Client, prompt, modelParam string, instructions string, temperature float32, maxTokens int, topP float32, frequencyPenalty, presencePenalty float32, stop []string) (string, int, error) {
 	messages := []openai.ChatCompletionMessage{
 		{
 			Role:    "system",
@@ -64,7 +65,7 @@ func useChatCompletionAPI(prompt, modelParam string, instructions string, temper
 		},
 	}
 
-	resp, err := OPENAI_CLIENT.CreateChatCompletion(
+	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
 			Model:            modelParam,
@@ -85,8 +86,11 @@ func useChatCompletionAPI(prompt, modelParam string, instructions string, temper
 	return resp.Choices[0].Message.Content, resp.Usage.TotalTokens, nil
 }
 
-func useCompletionAPI(prompt, modelParam string, temperature float32, maxTokens int, topP float32, frequencyPenalty, presencePenalty float32, stop []string) (string, int, error) {
-	resp, err := OPENAI_CLIENT.CreateCompletion(
+func useCompletionAPI(client *openai.Client, prompt, modelParam string,
+	temperature float32, maxTokens int, topP float32,
+	frequencyPenalty, presencePenalty float32,
+	stop []string) (string, int, error) {
+	resp, err := client.CreateCompletion(
 		context.Background(),
 		openai.CompletionRequest{
 			Model:            modelParam,
@@ -107,7 +111,8 @@ func useCompletionAPI(prompt, modelParam string, temperature float32, maxTokens 
 	return resp.Choices[0].Text, resp.Usage.TotalTokens, nil
 }
 
-func callEmbeddingAPIWithRetry(client *openai.Client, texts []string, embedModel openai.EmbeddingModel, maxRetries int) (*openai.EmbeddingResponse, error) {
+func callEmbeddingAPIWithRetry(client *openai.Client, texts []string, embedModel openai.EmbeddingModel,
+	maxRetries int) (*openai.EmbeddingResponse, error) {
 	var err error
 	var res openai.EmbeddingResponse
 
@@ -127,7 +132,8 @@ func callEmbeddingAPIWithRetry(client *openai.Client, texts []string, embedModel
 	return nil, err
 }
 
-func getEmbeddings(chunks []Chunk, batchSize int, embedModel openai.EmbeddingModel) ([][]float32, error) {
+func getEmbeddings(client *openai.Client, chunks []Chunk, batchSize int,
+	embedModel openai.EmbeddingModel) ([][]float32, error) {
 	embeddings := make([][]float32, 0, len(chunks))
 
 	for i := 0; i < len(chunks); i += batchSize {
@@ -139,7 +145,8 @@ func getEmbeddings(chunks []Chunk, batchSize int, embedModel openai.EmbeddingMod
 		}
 
 		log.Println("[getEmbeddings] Feeding texts to Openai to get embedding...\n", texts)
-		res, err := callEmbeddingAPIWithRetry(OPENAI_CLIENT, texts, embedModel, 3)
+
+		res, err := callEmbeddingAPIWithRetry(client, texts, embedModel, 3)
 		if err != nil {
 			return nil, err
 		}
@@ -155,8 +162,8 @@ func getEmbeddings(chunks []Chunk, batchSize int, embedModel openai.EmbeddingMod
 	return embeddings, nil
 }
 
-func getEmbedding(text string, embedModel openai.EmbeddingModel) ([]float32, error) {
-	res, err := callEmbeddingAPIWithRetry(OPENAI_CLIENT, []string{text}, embedModel, 3)
+func getEmbedding(client *openai.Client, text string, embedModel openai.EmbeddingModel) ([]float32, error) {
+	res, err := callEmbeddingAPIWithRetry(client, []string{text}, embedModel, 3)
 	if err != nil {
 		return nil, err
 	}

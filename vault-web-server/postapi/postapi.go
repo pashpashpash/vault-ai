@@ -18,7 +18,7 @@ import (
 var (
 	CONFIG                = serverutil.GetConfig()
 	C                     *cache.Cache
-	OPENAI_CLIENT         *openai.Client
+	DEFAULT_OPENAI_CLIENT         *openai.Client
 	PINECONE_API_KEY      = ""
 	PINECONE_API_ENDPOINT = ""
 )
@@ -30,7 +30,7 @@ type Config struct {
 // Must be called to set up this module before use
 func Run(openaiClient *openai.Client, pineconeApiKey string, pineconeApiEndpoint string) {
 	C = cache.New(cache.NoExpiration, cache.NoExpiration)
-	OPENAI_CLIENT = openaiClient
+	DEFAULT_OPENAI_CLIENT = openaiClient
 	PINECONE_API_KEY = pineconeApiKey
 	PINECONE_API_ENDPOINT = pineconeApiEndpoint
 }

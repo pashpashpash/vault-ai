@@ -46,8 +46,15 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	files := r.MultipartForm.File["files"]
 	uuid := r.FormValue("uuid") // Get the UUID from the form data
+	userProvidedOpenApiKey := r.FormValue("apikey")
 
 	log.Println("[UploadHandler] UUID=", uuid)
+
+	clientToUse := DEFAULT_OPENAI_CLIENT
+	if userProvidedOpenApiKey != "" {
+		log.Println("[UploadHandler] Using provided custom API key:", userProvidedOpenApiKey)
+		clientToUse = openai.NewClient(userProvidedOpenApiKey)
+	}
 
 	responseData := UploadResponse{
 		SuccessfulFileNames: make([]string, 0),
@@ -112,7 +119,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		// Process the fileBytes into embeddings and store in Pinecone here
 		chunks := CreateChunks(fileContent, 20, 4, fileName)
 
-		embeddings, err := getEmbeddings(chunks, 100, openai.AdaEmbeddingV2)
+		embeddings, err := getEmbeddings(clientToUse, chunks, 100, openai.AdaEmbeddingV2)
 		if err != nil {
 			errMsg := fmt.Sprintf("Error getting embeddings: %v", err)
 			log.Println("[UploadHandler ERR]", errMsg)
