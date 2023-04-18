@@ -80,11 +80,11 @@ The golang server uses POST APIs to process incoming uploads and respond to ques
 
 2.  `/api/question` for answering questions
 
-All api endpoints are declared in the [vault-web-server/main.go](https://github.com/pashpashpash/atheneum/blob/master/vault-web-server/main.go#L79-L80) file.
+All api endpoints are declared in the [vault-web-server/main.go](https://github.com/pashpashpash/vault-ai/blob/master/vault-web-server/main.go#L79-L80) file.
 
 ### Uploading files and processing them into embeddings
 
-The [vault-web-server/postapi/fileupload.go](https://github.com/pashpashpash/atheneum/blob/master/vault-web-server/postapi/fileupload.go#L29) file contains the `UploadHandler` logic for handling incoming uploads on the backend.
+The [vault-web-server/postapi/fileupload.go](https://github.com/pashpashpash/vault-ai/blob/master/vault-web-server/postapi/fileupload.go#L29) file contains the `UploadHandler` logic for handling incoming uploads on the backend.
 The UploadHandler function in the postapi package is responsible for handling file uploads (with a maximum total upload size of 300 MB) and processing them into embeddings to store in Pinecone. It accepts PDF and plain text files, extracts text from them, and divides the content into chunks. Using OpenAI API, it obtains embeddings for each chunk and upserts (inserts or updates) the embeddings into Pinecone. The function returns a JSON response containing information about the uploaded files and their processing status.
 
 1. Limit the size of the request body to MAX_TOTAL_UPLOAD_SIZE (300 MB).
@@ -102,7 +102,7 @@ The UploadHandler function in the postapi package is responsible for handling fi
 
 ### Storing embeddings into Pinecone db
 
-After getting OpenAI embeddings for each chunk of an uploaded file, the server stores all of the embeddings, along with metadata associated for each embedding in Pinecone DB. The metadata for each embedding is created in the [upsertEmbeddingsToPinecone](https://github.com/pashpashpash/atheneum/blob/master/vault-web-server/postapi/pinecone.go#L22) function, with the following keys and values:
+After getting OpenAI embeddings for each chunk of an uploaded file, the server stores all of the embeddings, along with metadata associated for each embedding in Pinecone DB. The metadata for each embedding is created in the [upsertEmbeddingsToPinecone](https://github.com/pashpashpash/vault-ai/blob/master/vault-web-server/postapi/pinecone.go#L22) function, with the following keys and values:
 
 -   `file_name`: The name of the file from which the text chunk was extracted.
 -   `start`: The starting character position of the text chunk in the original file.
@@ -114,7 +114,7 @@ This metadata is useful for providing context to the embeddings and is used to d
 
 ### Answering questions
 
-The `QuestionHandler` function in [vault-web-server/postapi/questions.go](https://github.com/pashpashpash/atheneum/blob/master/vault-web-server/postapi/questions.go#L24) is responsible for handling all incoming questions. When a question is entered on the frontend and the user presses "search" (or enter), the server uses the OpenAI embeddings API once again to get an embedding for the question (a.k.a. query vector). This query vector is used to query Pinecone db to get the most relevant context for the question. Finally, a prompt is built by packing the most relevant context + the question in a prompt string that adheres to OpenAI token limits (the go tiktoken library is used to estimate token count).
+The `QuestionHandler` function in [vault-web-server/postapi/questions.go](https://github.com/pashpashpash/vault-ai/blob/master/vault-web-server/postapi/questions.go#L24) is responsible for handling all incoming questions. When a question is entered on the frontend and the user presses "search" (or enter), the server uses the OpenAI embeddings API once again to get an embedding for the question (a.k.a. query vector). This query vector is used to query Pinecone db to get the most relevant context for the question. Finally, a prompt is built by packing the most relevant context + the question in a prompt string that adheres to OpenAI token limits (the go tiktoken library is used to estimate token count).
 
 ### Frontend info
 
@@ -127,3 +127,7 @@ If you'd like to read more about this topic, I recommend this post from the pine
 -   https://www.pinecone.io/learn/openai-gen-qa/
 
 I hope you enjoy it (:
+
+## Uploading larger files
+
+I currently have the max individual file size set to 3MB. If you want to increase this limit, edit the MAX_FILE_SIZE and MAX_TOTAL_UPLOAD_SIZE constants in [fileupload.go](https://github.com/pashpashpash/vault-ai/blob/master/vault-web-server/postapi/fileupload.go#L26-L27).
