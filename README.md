@@ -130,4 +130,4 @@ I hope you enjoy it (:
 
 ## Uploading larger files
 
-I currently have the max individual file size set to 3MB. If you want to increase this limit, edit the MAX_FILE_SIZE and MAX_TOTAL_UPLOAD_SIZE constants in [fileupload.go](https://github.com/pashpashpash/vault-ai/blob/master/vault-web-server/postapi/fileupload.go#L26-L27).
+I currently have the max individual file size set to 3MB. If you want to increase this limit, edit the `MAX_FILE_SIZE` and `MAX_TOTAL_UPLOAD_SIZE` constants in [fileupload.go](https://github.com/pashpashpash/vault-ai/blob/master/vault-web-server/postapi/fileupload.go#L26-L27).
