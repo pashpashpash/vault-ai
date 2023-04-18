@@ -88,8 +88,8 @@ func main() {
 
 	// if serving on https, need to provide self-signed certs
 	if *port == "443" {
-		certFile := "/etc/letsencrypt/live/op.pash.city/fullchain.pem"
-		keyFile := "/etc/letsencrypt/live/op.pash.city/privkey.pem"
+		certFile := "/etc/letsencrypt/live/vault.pash.city/fullchain.pem"
+		keyFile := "/etc/letsencrypt/live/vault.pash.city/privkey.pem"
 		log.Println("[negroni] listening on :443")
 		log.Fatal(http.ListenAndServeTLS(":"+*port, certFile, keyFile, server))
 	} else {
