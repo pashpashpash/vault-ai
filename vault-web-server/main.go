@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"math/rand"
@@ -88,6 +89,7 @@ func main() {
 
 	// if serving on https, need to provide self-signed certs
 	if *port == "443" {
+		go httpRedirect() // redirect all http to https
 		certFile := "/etc/letsencrypt/live/vault.pash.city/fullchain.pem"
 		keyFile := "/etc/letsencrypt/live/vault.pash.city/privkey.pem"
 		log.Println("[negroni] listening on :443")
@@ -230,5 +232,18 @@ func ReactFileServer(fs http.FileSystem) http.Handler {
 func StaticRedirectHandler(to string) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, to, http.StatusPermanentRedirect)
+	}
+}
+
+func httpRedirect() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		httpsURL := fmt.Sprintf("https://%s%s", r.Host, r.URL)
+		http.Redirect(w, r, httpsURL, http.StatusMovedPermanently)
+	})
+
+	log.Println("HTTP redirect server listening on :80")
+	err := http.ListenAndServe(":80", nil)
+	if err != nil {
+		log.Fatalf("Error starting HTTP redirect server: %v", err)
 	}
 }
