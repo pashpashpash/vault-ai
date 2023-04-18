@@ -1,0 +1,14 @@
+{
+    "vault.app/": {
+        "PageTitle": "The Vault",
+        "PageIcon": "/img/logos/vault-favicon.png",
+        "MetaTitle": "The Vault | AI with Long-term Memory",
+        "MetaDescription": "Upload any number of files (pdf, text, epub) and use them as context when asking OpenAI questions.",
+        "MetaVideo": "!",
+        "MetaType": "website",
+        "MetaImage": "https://i.imgur.com/6YSvyEV.png",
+        "MetaUrl": "https://vault.pash.city",
+        "TwitterUsername": "@pashmerepat",
+        "MetaKeywords": "Conversation, Analysis, GPT3"
+    }
+}

@@ -1,0 +1,31 @@
+@import '../common.less';
+
+.page {
+    position: relative;
+    background-position: center bottom;
+    background-size: cover;
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+
+    .contentBackground {
+        background-size: cover;
+        background-position: center bottom;
+
+        .content {
+            // Width will be overridden by JS
+            #layout.page-centered-content(600px, false);
+
+            &.showFooter {
+                padding-bottom: 8px;
+                // min-height: 80vh;
+            }
+
+            &.verticalCenter {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+        }
+    }
+}

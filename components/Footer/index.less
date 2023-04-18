@@ -1,0 +1,391 @@
+@import '../common.less';
+
+.footer {
+    width: 100%;
+    height: auto;
+    color: rgba(255, 255, 255, 0.4);
+    background-color: @color-vault-background-dark-grey;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    .footerContainer {
+        position: relative;
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        .cropHeight {
+            max-height: 380px;
+            overflow-x: hidden;
+            pointer-events: none;
+            z-index: 2;
+            margin-bottom: -2px;
+        }
+
+        img.scale {
+            /* just in case, to force correct aspect ratio */
+            height: auto !important;
+            display: block; /* corrects small inline gap at bottom of containing div */
+            width: 100vw; /* corrects obscure Firefox bug */
+            max-width: 100%;
+            /* just in case, to force correct aspect ratio */
+            height: auto !important;
+            /*width: auto\9; 
+            /* ie8+9 - use modernizr instead of this \9 hack */
+            /* lt ie8 */
+            -ms-interpolation-mode: bicubic;
+            /* optionally force a minimum size if img src size is known: */
+            /* min-height: 320px; /* max-height of .crop-height */
+            /* min-width: 480px; /* proportional to above */
+        }
+
+        .flip {
+            -webkit-transform: rotate(180deg);
+            -moz-transform: rotate(180deg);
+            -ms-transform: rotate(180deg);
+            -o-transform: rotate(180deg);
+            transform: rotate(180deg);
+            /* needed? not sure */
+            zoom: 1;
+        }
+
+        img.flip {
+            /* actually, aligns left within .cropheight */
+            float: right;
+            /* clearfix after? */
+        }
+
+        .content {
+            z-index: 3;
+            font-size: 12px;
+            padding: 0 10% 30px 10%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: @color-vault-black;
+            width: 100%;
+            .linkRow {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-evenly;
+                align-items: center;
+                padding: 4px;
+                width: 100%;
+                .linkColumn {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start !important;
+                    align-items: flex-start;
+                    padding: 4px;
+                    height: 100%;
+                    .linkHeader {
+                        font-size: 18px;
+                        font-weight: bold;
+                        color: @color-vault-purple;
+                        // padding: 4px;
+                    }
+                    .link {
+                        color: @color-vault-white;
+                        text-decoration: none;
+                        // padding: 4px;
+                        &:hover {
+                            color: @color-vault-white;
+                        }
+                    }
+                }
+            }
+
+            .socialButtons {
+                width: 170px;
+                height: auto;
+                @media @medium-query {
+                    display: none;
+                }
+                .socialIcon {
+                    display: inline-block;
+                    position: relative;
+                    overflow: hidden;
+                    vertical-align: middle;
+                    margin-right: 12px;
+                    border-radius: 50%;
+                    border: solid @color-vault-black 2px;
+                    transition: all ease 0.5s;
+                    &:hover {
+                        filter: brightness(1.3);
+                    }
+                    .socialContainer {
+                        height: 40px;
+                        width: 40px;
+                        background-color: @color-vault-black;
+                    }
+                }
+            }
+
+            .bottomRow {
+                display: flex;
+                align-items: center;
+
+                span {
+                    display: inline-block;
+                    width: 86%;
+                    vertical-align: top;
+                    padding-left: 10px;
+                }
+            }
+        }
+    }
+
+    &.floating {
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+
+        // Partially hide footer when floating on mobile
+        @media @small-query, @medium-query {
+            bottom: unset;
+            top: 80%;
+        }
+
+        // Toggle footer button is only visible when in floating mode
+        .toggleFooterButton {
+            opacity: 1;
+        }
+
+        // Mobile footer expanded view (not hiding)
+        &.expanded {
+            @media @small-query, @medium-query {
+                bottom: 0px;
+                top: unset;
+            }
+
+            .toggleFooterButton {
+                &:after {
+                    transform: rotate(0deg);
+                }
+            }
+        }
+    }
+
+    .centered {
+        @content-width: 800px;
+        width: @content-width;
+        max-width: 80vw;
+
+        .footer-column-group {
+            @column-padding: 16px;
+
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            width: 100%;
+            vertical-align: top;
+            margin-top: (-1 * @column-padding);
+
+            .footer-column {
+                font-size: 12px;
+                color: lightgrey;
+                margin-right: 16px;
+                margin-top: @column-padding;
+
+                &:last-child {
+                    margin-right: 0px;
+                }
+
+                h1 {
+                    font-size: 14px;
+                    font-weight: normal;
+                    letter-spacing: 1px;
+                }
+
+                a {
+                    display: block;
+                    margin-bottom: 8px;
+
+                    &:last-child {
+                        margin-bottom: 0px;
+                    }
+                }
+
+                // For the social icons zone
+                .row {
+                    @icon-padding: 8px;
+
+                    margin-bottom: @icon-padding;
+                    margin-top: 0px;
+
+                    &:first-child {
+                        margin-top: @icon-padding;
+                    }
+
+                    &:last-child {
+                        margin-bottom: 0px;
+                    }
+
+                    a {
+                        #ui.clickableImage();
+                        .square(42px);
+                        display: inline-block;
+                        background-size: cover;
+                        background-position: center;
+                        margin: 0px @icon-padding 0px 0px;
+
+                        &:last-child {
+                            margin-right: 0px;
+                        }
+
+                        &.reddit {
+                            background-image: url('/img/Footer/reddit.png');
+                        }
+
+                        &.twitter {
+                            background-image: url('/img/Footer/twitter.png');
+                        }
+
+                        &.youtube {
+                            background-image: url('/img/Footer/youtube.png');
+                        }
+
+                        &.medium {
+                            background-image: url('/img/Footer/medium.png');
+                        }
+
+                        &.discord {
+                            background-image: url('/img/Footer/discord.png');
+                        }
+
+                        &.facebook {
+                            background-image: url('/img/Footer/facebook.png');
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .copyright-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-top: 32px;
+
+        @media @small-query {
+            flex-direction: column-reverse;
+        }
+
+        .copyright {
+            flex-shrink: 2;
+            font-size: 11px;
+            line-height: 16px;
+            color: lightgrey;
+            text-align: center;
+            margin-left: 64px; // hack to align more to center
+
+            @media @small-query {
+                margin-left: 0px;
+                margin-bottom: 32px;
+            }
+
+            a {
+                #ui.link(lightgrey);
+            }
+        }
+
+        .action {
+            flex-shrink: 0;
+            display: inline-block;
+            font-size: 11px;
+
+            @media @small-query {
+                display: none;
+            }
+        }
+    }
+
+    .toggleFooterButton {
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        opacity: 0;
+        .square(32px);
+        margin-left: -16px;
+        font-size: 18px;
+        cursor: pointer;
+        font-weight: bold;
+        border-radius: 32px;
+        transition: all 250ms ease-in-out;
+
+        &:after {
+            content: '▼';
+            font-family: arial;
+            transform: rotate(180deg);
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            bottom: 0px;
+            left: 0px;
+            text-align: center;
+            line-height: 32px;
+            transition: transform 250ms ease-in-out;
+        }
+    }
+
+    .cookieBanner {
+        position: fixed;
+        bottom: 40px;
+        left: 10%;
+        right: 10%;
+        width: 80%;
+        padding: 5px 14px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #eee;
+        border-radius: 5px;
+        box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+
+        @media @small-query {
+            flex-direction: column;
+            justify-content: center;
+        }
+    }
+
+    .buttonHolder {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    p {
+        width: 66%;
+        line-height: 1.5;
+
+        @media @small-query {
+            width: 100%;
+        }
+    }
+
+    .acceptButton {
+        font-weight: 500;
+        color: white;
+        opacity: 1;
+        font-size: 20px;
+        padding: 6px 20px;
+        margin: 10px;
+    }
+
+    .buttontext {
+        color: white;
+    }
+}
+
+.backgroundOnly {
+    height: 150px;
+    background-color: @color-vault-background-dark-grey;
+}

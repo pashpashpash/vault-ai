@@ -1,0 +1,93 @@
+@import './common.less';
+@import './fonts.less';
+
+html {
+    box-sizing: border-box;
+    height: 100%;
+
+    font-family: 'Montserrat', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: subpixel-antialiased;
+
+    // for firefox
+    scrollbar-width: thin;
+    scrollbar-color: darken(@color-nugbase-light-grey, 25%)
+        fade(darken(@color-nugbase-light-grey, 60%), 40%);
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+        monospace;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+        'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+        'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+textarea {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+        'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+        'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar:horizontal {
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+    background-color: fade(darken(@color-nugbase-light-grey, 60%), 40%);
+}
+
+::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.7);
+    background-color: darken(@color-nugbase-light-grey, 25%);
+}
+
+// React main container
+body {
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+        background-color: darken(@color-nugbase-light-grey, 60%);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.7);
+        background-color: darken(@color-nugbase-light-grey, 25%);
+    }
+}

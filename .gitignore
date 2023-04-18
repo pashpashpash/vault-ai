@@ -1,0 +1,34 @@
+## Node Stuff
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# private keys
+# /secret/
+# secret
+
+# Dependency directories
+node_modules
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Misc
+.DS_Store
+bin
+pkg
+static/js
+github.com
+golang.org
+google.golang.org
+cloud.google.com
+go.opencensus.io
+go.uber.org
+testfiles
+gopkg.in
+
+Dockerfile

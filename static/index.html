@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#1E3A50" />
+
+    <meta property="og:title" content="{{.Config.MetaTitle}}" />
+    <meta property="{{.Config.contentType}}" content="{{.Config.content}}" />
+    <meta property="{{.Config.contentType}}:height" content="{{.Config.ImageHeight}}" />
+    <meta property="{{.Config.contentType}}:width" content="{{.Config.ImageWidth}}" />
+    <meta property="{{.Config.contentType}}:alt" content="{{.Config.MetaDescription}}" />
+
+    <meta property="og:url" content="{{.Config.MetaUrl}}" />
+
+    <meta property="og:type" content="{{.Config.MetaType}}" />
+    <meta property="og:description" content="{{.Config.MetaDescription}}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="{{.Config.TwitterUsername}}" />
+    <meta name="twitter:title" content="{{.Config.MetaTitle}}" />
+    <meta name="twitter:description" content="{{.Config.MetaDescription}}" />
+    <meta name="twitter:image:src" content="{{.Config.content}}" />
+    <meta name="description" content="{{.Config.MetaDescription}}" />
+    <meta name="keywords" content="{{.Config.MetaKeywords}}" />
+    <!-- Configuration -->
+
+    <title>{{.Config.PageTitle}}</title>
+    <link rel="shortcut icon" type="image/svg+xml" href="{{.Config.PageIcon}}" />
+    <!--        <link rel="manifest" href="%PUBLIC_URL%/manifest.json">-->
+</head>
+
+<body>
+    <!-- GO GLOBAL CONFIG TEMPLATE (DO NOT MODIFY) -->
+    <script type="text/javascript">
+        window.CONFIG = {{ .Config}};
+        window.SITE = {{.Config.Site}};
+    </script>
+
+    <!-- GHETTO HTTPS REDIRECT SINCE IT'S HARD IN KUBERNETES -->
+    <script type="text/javascript">
+        (function () {
+            if (
+                location.hostname !== 'localhost' &&
+                location.protocol !== 'https:'
+            ) {
+                location.replace(
+                    'https:' +
+                    location.href.substring(location.protocol.length)
+                );
+            }
+        })();
+    </script>
+
+    <!-- Main App React Stuff -->
+    <div id="app"></div>
+    <script type="text/javascript">
+        (function () {
+            var bundleScript = document.createElement('script');
+            bundleScript.type = 'text/javascript';
+            bundleScript.src =
+                '/js/bundle.js?v=' + window.CONFIG.GAME_VERSION;
+            bundleScript.onload = function () {
+                window.renderApp();
+            }
+            window.document.body.appendChild(bundleScript);
+        })();
+    </script>
+</body>
+
+</html>

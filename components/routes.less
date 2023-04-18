@@ -1,0 +1,42 @@
+@import './common.less';
+
+.crashPage {
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-color: @color-vault-background-dark-grey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+
+    .errorBox {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 1000px;
+
+        .title {
+            display: inline-block;
+            margin-bottom: 16px;
+            font-weight: bold;
+        }
+
+        .message {
+            display: inline-block;
+            margin-left: 4px;
+        }
+
+        .reactStack {
+            white-space: pre-wrap;
+            margin-top: 8px;
+            font-family: monospace;
+        }
+
+        .errorStack {
+            display: none; // details are hidden
+            white-space: pre-wrap;
+            margin-top: 8px;
+            font-family: monospace;
+        }
+    }
+}
