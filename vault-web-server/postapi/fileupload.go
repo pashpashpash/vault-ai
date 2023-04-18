@@ -23,15 +23,15 @@ type UploadResponse struct {
 	FailedFileNames     map[string]string `json:"failed_file_names"`
 }
 
-const MAX_FILE_SIZE int64 = 300 << 20         // 300 MB
-const MAX_TOTAL_UPLOAD_SIZE int64 = 300 << 20 // 300 MB
+const MAX_FILE_SIZE int64 = 3 << 20         // 3 MB
+const MAX_TOTAL_UPLOAD_SIZE int64 = 3 << 20 // 3 MB
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Limit the request body size
 	r.Body = http.MaxBytesReader(w, r.Body, MAX_TOTAL_UPLOAD_SIZE)
 
-	err := r.ParseMultipartForm(MAX_TOTAL_UPLOAD_SIZE) // Maximum upload of 300 MB
+	err := r.ParseMultipartForm(MAX_TOTAL_UPLOAD_SIZE) // Maximum upload of 3 MB
 	if err != nil {
 		if err == http.ErrMissingBoundary || err == http.ErrNotMultipart || err == http.ErrNotSupported {
 			log.Println("[UploadHandler ERR] Error parsing multipart form:", err)
