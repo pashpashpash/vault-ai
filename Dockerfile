@@ -1,5 +1,5 @@
 # Base image
-FROM golang:1.20.3-alpine3.17
+FROM golang:1.18.9-alpine3.17
 
 # Install dependencies
 RUN apk add --no-cache curl bash build-base gcc g++ git musl-dev poppler-utils nodejs-current npm
@@ -21,7 +21,8 @@ COPY . .
 RUN npm install && npm run dev
 
 # Build backend
-RUN go mod download && go build -o opvault .
+RUN go mod download || (echo "Failed to download Go modules" && exit 1) 
+RUN go build -o opvault ./vault-web-server
 
 # Install necessary runtime dependencies
 RUN apk add --no-cache ca-certificates

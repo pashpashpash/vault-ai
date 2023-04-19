@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
       "start": "./scripts/go-compile.sh ./vault-web-server && echo && ./bin/vault-web-server",
-      "dev": "webpack --progress --watch",
+      "dev": "webpack --mode=production",
       "postinstall": "./scripts/go-compile.sh ./vault-web-server"
     },
   "repository": {
