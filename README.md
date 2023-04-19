@@ -52,6 +52,8 @@ I recommend [installing nvm and using it to install node v19](https://medium.com
 
 `echo "your_pinecone_api_key_here" > secret/pinecone_api_key`
 
+When setting up your pinecone index, use a vector size of `1536` and keep all the default settings the same.
+
 3.  Create a new file `secret/pinecone_api_endpoint` and paste your [Pinecone API endpoint](https://app.pinecone.io/organizations/) into it:
 
 `echo "https://example-50709b5.svc.asia-southeast1-gcp.pinecone.io" > secret/pinecone_api_endpoint`
