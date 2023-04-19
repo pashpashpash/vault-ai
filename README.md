@@ -78,11 +78,11 @@ When setting up your pinecone index, use a vector size of `1536` and keep all th
 
 ### Approach 2: Docker Compose Setup
 
-1. Make sure you have Docker and Docker Compose installed on your system.
+1. Make sure you have Docker and Docker Compose installed on your system
 
 2. Set up your API keys and endpoints in the `docker-compose.yml` file's environment section
 
-3. Run the application by running: ```docker-compose up -d````
+3. Run `docker-compose up` in the project's root directory
 
 4. Visit the local version of the site at http://localhost:8100
 
