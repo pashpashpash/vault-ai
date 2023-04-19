@@ -5,10 +5,10 @@
   "description": "vault core website",
   "main": "index.js",
   "scripts": {
-    "start": "source ./scripts/source-me.sh && ./scripts/go-compile.sh ./vault-web-server && echo && ./bin/vault-web-server",
-    "dev": "webpack --progress --watch",
-    "postinstall": "source ./scripts/source-me.sh && ./scripts/go-compile.sh ./vault-web-server"
-  },
+      "start": "./scripts/go-compile.sh ./vault-web-server && echo && ./bin/vault-web-server",
+      "dev": "webpack --progress --watch",
+      "postinstall": "./scripts/go-compile.sh ./vault-web-server"
+    },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pashpashpash/vault.git"

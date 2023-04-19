@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  opvault:
+    build: .
+    ports:
+      - "8100:8100"
+    volumes:
+      - ./secret:/app/secret
