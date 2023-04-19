@@ -34,7 +34,6 @@ WORKDIR /app
 
 # Copy JavaScript package files and install dependencies
 COPY package*.json ./
-# RUN npm install
 RUN npm install --ignore-scripts
 
 
