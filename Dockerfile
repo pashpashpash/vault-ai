@@ -34,7 +34,9 @@ WORKDIR /app
 
 # Copy JavaScript package files and install dependencies
 COPY package*.json ./
-RUN npm install
+# RUN npm install
+RUN npm install --ignore-scripts
+
 
 # Copy React source files and other assets
 COPY components components/
@@ -58,8 +60,13 @@ COPY --from=backend-builder /go/src/app/main /app/main
 COPY --from=frontend-builder /app/static /static
 COPY config/websites.json /config/websites.json
 
+# Copy scripts directory
+COPY scripts scripts/
+
 # Expose the application port
 EXPOSE 8100
 
-# Execute Go binary
+# Set the file permission for go-compile.sh and execute Go binary
+RUN chmod +x scripts/go-compile.sh
 CMD ["/app/main"]
+
