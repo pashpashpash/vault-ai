@@ -10,3 +10,5 @@ services:
       - OPENAI_API_KEY=your_openai_api_key
       - PINECONE_API_KEY=your_pinecone_api_key
       - PINECONE_API_ENDPOINT=your_pinecone_api_endpoint
+      - MAX_FILE_SIZE=3145728 # 3 MB, change as needed
+      - MAX_TOTAL_UPLOAD_SIZE=3145728 # 3 MB, change as needed

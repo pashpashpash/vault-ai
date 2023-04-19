@@ -9,6 +9,8 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strings"
+	"os"
+	"strconv"
 
 	"code.sajari.com/docconv"
 
@@ -23,8 +25,27 @@ type UploadResponse struct {
 	FailedFileNames     map[string]string `json:"failed_file_names"`
 }
 
-const MAX_FILE_SIZE int64 = 3 << 20         // 3 MB
-const MAX_TOTAL_UPLOAD_SIZE int64 = 3 << 20 // 3 MB
+var MAX_FILE_SIZE int64
+var MAX_TOTAL_UPLOAD_SIZE int64
+
+func init() {
+	maxFileSizeStr := os.Getenv("MAX_FILE_SIZE")
+	maxTotalUploadSizeStr := os.Getenv("MAX_TOTAL_UPLOAD_SIZE")
+
+	maxFileSize, err := strconv.ParseInt(maxFileSizeStr, 10, 64)
+	if err != nil {
+		maxFileSize = 3 << 20 // default to 3 MB
+	}
+
+	maxTotalUploadSize, err := strconv.ParseInt(maxTotalUploadSizeStr, 10, 64)
+	if err != nil {
+		maxTotalUploadSize = 3 << 20 // default to 3 MB
+	}
+
+	MAX_FILE_SIZE = maxFileSize
+	MAX_TOTAL_UPLOAD_SIZE = maxTotalUploadSize
+}
+
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
