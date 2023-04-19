@@ -6,9 +6,8 @@
   "main": "index.js",
   "scripts": {
       "start": "./scripts/go-compile.sh ./vault-web-server && echo && ./bin/vault-web-server",
-      "dev": "webpack --mode=production",
-      "postinstall": "./scripts/go-compile.sh ./vault-web-server"
-    },
+      "dev": "webpack --mode=production"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pashpashpash/vault.git"

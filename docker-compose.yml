@@ -5,5 +5,7 @@ services:
     build: .
     ports:
       - "8100:8100"
-    volumes:
-      - ./secret:/app/secret
+    environment:
+      - OPENAI_API_KEY=your_openai_api_key
+      - PINECONE_API_KEY=your_pinecone_api_key
+      - PINECONE_API_ENDPOINT=your_pinecone_api_endpoint

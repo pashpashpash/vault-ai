@@ -1,34 +1,65 @@
-# Base image
-FROM golang:1.18.9-alpine3.17
+# Stage 1: Build Go backend
+FROM golang:1.18.9-alpine3.17 AS backend-builder
 
-# Install dependencies
-RUN apk add --no-cache curl bash build-base gcc g++ git musl-dev poppler-utils nodejs-current npm
+# Install necessary build dependencies
+RUN apk add --no-cache build-base gcc g++ musl-dev
 
-# Set environment variables
+WORKDIR /go/src/app
+
+# Set Go environment variables taken from scripts/source-me.sh
 ENV GO111MODULE=on \
-    GOBIN="/app/bin" \
-    GOPATH="/root/go" \
-    PATH="/app/bin:/app/tools/protoc-3.6.1/bin:$PATH" \
+    GOBIN=/go/src/app/bin \
+    GOPATH=/root/go \
+    PATH=$PATH:/go/src/app/bin:/go/src/app/tools/protoc-3.6.1/bin \
     DOCKER_BUILDKIT=1
 
-# Set work directory
+# Copy Go module files and download dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy Go source files
+COPY errorlist errorlist/
+COPY form form/
+COPY serverutil serverutil/
+COPY validator validator/
+COPY vault-web-server vault-web-server/
+
+# Build Go application
+RUN go build -o main ./vault-web-server
+
+# Stage 2: Build React frontend
+FROM node:19-alpine3.17 AS frontend-builder
+
 WORKDIR /app
 
-# Copy source code
-COPY . .
+# Copy JavaScript package files and install dependencies
+COPY package*.json ./
+RUN npm install
 
-# Build frontend
-RUN npm install && npm run dev
+# Copy React source files and other assets
+COPY components components/
+COPY config config/
+COPY static static/
+COPY webpack.config.js .
 
-# Build backend
-RUN go mod download || (echo "Failed to download Go modules" && exit 1) 
-RUN go build -o opvault ./vault-web-server
+# Build React frontend
+RUN npx webpack --config webpack.config.js
 
-# Install necessary runtime dependencies
-RUN apk add --no-cache ca-certificates
+# Stage 3: Assemble the final image
+FROM alpine:3.17
 
-# Expose the port
+# Install only required runtime dependencies
+RUN apk add --no-cache ca-certificates poppler-utils
+
+# Copy Go binary from the backend-builder stage
+COPY --from=backend-builder /go/src/app/main /app/main
+
+# Copy static files from the frontend-builder stage
+COPY --from=frontend-builder /app/static /static
+COPY config/websites.json /config/websites.json
+
+# Expose the application port
 EXPOSE 8100
 
-# Run the application
-CMD ["/app/opvault"]
+# Execute Go binary
+CMD ["/app/main"]
