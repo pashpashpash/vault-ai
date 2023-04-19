@@ -14,7 +14,7 @@ With quick setup, you can launch your own version of this Golang server along wi
 
 With The Vault, you can:
 
--   Upload a variety of popular document types via a simple react frotnend to create a custom knowledge base
+-   Upload a variety of popular document types via a simple react frontend to create a custom knowledge base
 -   Retrieve accurate and relevant answers based on the content of your uploaded documents
 -   See the filenames and specific context snippets that inform the answer
 -   Explore the power of the OP Stack (OpenAI + Pinecone Vector Database) in a user-friendly interface
