@@ -32,3 +32,4 @@ testfiles
 gopkg.in
 
 Dockerfile
+.env
