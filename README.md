@@ -22,10 +22,25 @@ With The Vault, you can:
 
 ## Manual Dependencies
 
--   node: v19.2.0
+-   node: v19
 -   go: v1.18.9 darwin/arm64
+-   poppler
 
 ## Setup
+
+### Install manual dependencies
+
+1.  Install go:
+
+Follow the go docs [here](https://go.dev/doc/install)
+
+2.  Install node v19 
+
+I recommend [installing nvm and using it to install node v19](https://medium.com/@iam_vinojan/how-to-install-node-js-and-npm-using-node-version-manager-nvm-143165b16ce1)
+
+3.  Install poppler
+
+`sudo apt-get install -y poppler-utils` on Ubuntu, or `brew install poppler` on Mac
 
 ### Set up your API keys and endpoints in the `secret` folder
 
