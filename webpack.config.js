@@ -29,6 +29,7 @@ var config = {
         path: BUILD_DIR,
         filename: 'bundle.js',
     },
+    stats: 'errors-warnings',
     module: {
         rules: [
             {

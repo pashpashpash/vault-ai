@@ -14,7 +14,7 @@ With quick setup, you can launch your own version of this Golang server along wi
 
 With The Vault, you can:
 
--   Upload a variety of popular document types via a simple react frontend to create a custom knowledge base
+-   Upload a variety of popular document types via a simple react frotnend to create a custom knowledge base
 -   Retrieve accurate and relevant answers based on the content of your uploaded documents
 -   See the filenames and specific context snippets that inform the answer
 -   Explore the power of the OP Stack (OpenAI + Pinecone Vector Database) in a user-friendly interface
@@ -22,25 +22,10 @@ With The Vault, you can:
 
 ## Manual Dependencies
 
--   node: v19
+-   node: v19.2.0
 -   go: v1.18.9 darwin/arm64
--   poppler
 
 ## Setup
-
-### Install manual dependencies
-
-1.  Install go:
-
-Follow the go docs [here](https://go.dev/doc/install)
-
-2.  Install node v19 
-
-I recommend [installing nvm and using it to install node v19](https://medium.com/@iam_vinojan/how-to-install-node-js-and-npm-using-node-version-manager-nvm-143165b16ce1)
-
-3.  Install poppler
-
-`sudo apt-get install -y poppler-utils` on Ubuntu, or `brew install poppler` on Mac
 
 ### Set up your API keys and endpoints in the `secret` folder
 
@@ -51,8 +36,6 @@ I recommend [installing nvm and using it to install node v19](https://medium.com
 2.  Create a new file `secret/pinecone_api_key` and paste your [Pinecone API key](https://docs.pinecone.io/docs/quickstart#2-get-and-verify-your-pinecone-api-key) into it:
 
 `echo "your_pinecone_api_key_here" > secret/pinecone_api_key`
-
-When setting up your pinecone index, use a vector size of `1536` and keep all the default settings the same.
 
 3.  Create a new file `secret/pinecone_api_endpoint` and paste your [Pinecone API endpoint](https://app.pinecone.io/organizations/) into it:
 
