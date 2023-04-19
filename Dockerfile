@@ -47,8 +47,9 @@ RUN npx webpack --config webpack.config.js
 FROM debian:buster-slim
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates && \
+    apt-get install -y --no-install-recommends ca-certificates poppler-utils && \
     rm -rf /var/lib/apt/lists/*
+
 
 COPY --from=go-builder /go/src/app/main /app/main
 COPY --from=js-builder /app/static /static
