@@ -6,7 +6,7 @@ OP Vault uses the OP Stack (OpenAI + Pinecone Vector Database) to enable users t
 
 <img width="512" alt="Screen Shot 2023-04-09 at 1 53 33 AM" src="/static/img/common/vault_library.png">
 
-With quick setup, you can launch your own version of this Golang server along with a user-friendly React frontend that allows users to ask OpenAI questions about the specific knowledge base provided. The primary focus is on human-readable content like books, letters, and other documents, making it a practical and valuable tool for knowledge extraction and question-answering. You can upload an entire library's worth of books and documents and recieve pointed answers along with the name of the file and specific section within the file that the answer is based on!
+With quick setup, you can launch your own version of this Golang server along with a user-friendly React frontend that allows users to ask OpenAI questions about the specific knowledge base provided. The primary focus is on human-readable content like books, letters, and other documents, making it a practical and valuable tool for knowledge extraction and question-answering. You can upload an entire library's worth of books and documents and receive pointed answers along with the name of the file and specific section within the file that the answer is based on!
 
 <img width="1498" alt="Screen Shot 2023-04-17 at 6 23 00 PM" src="https://user-images.githubusercontent.com/20898225/232645187-fff56d2b-f654-4c92-b061-4670734b2764.png">
 
