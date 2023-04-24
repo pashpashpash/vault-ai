@@ -1,9 +1,9 @@
 package postapi
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"mime/multipart"
 	"strings"
 
@@ -26,90 +26,82 @@ type Chunk struct {
 }
 
 // MaxTokensPerChunk is the maximum number of tokens allowed in a single chunk for OpenAI embeddings
-const MaxTokensPerChunk = 500
+// MaxTokensPerChunk is the maximum number of tokens allowed in a single chunk for OpenAI embeddings
+const MaxTokensPerChunk = 1000
 const EmbeddingModel = "text-embedding-ada-002"
 
+// Take file content, split it into sentences using neurosnap/sentences library
+// Start building chunks up to the MaxTokensPerChunk token limit
+// Use tiktoken-go to estimate token count
+// Once a chunk is full, move on to the next chunk until the entire content is covered
+// Use a dynamically set stride so that Chunks overlap each other by 10 sentences
+// Skip any sentence that is longer than MaxTokensPerChunk
+// All returned Chunks must have a non-empty Text contents
+// All lengths of files/sentences should be handled, including edge cases
+// There should be no chance of looping forever
 func CreateChunks(fileContent string, title string) ([]Chunk, error) {
+	chunks := []Chunk{}
+
+	// Initialize sentence tokenizer
 	tokenizer, _ := english.NewSentenceTokenizer(nil)
 	sentences := tokenizer.Tokenize(fileContent)
 
-	log.Println("[CreateChunks] getting tiktoken for", EmbeddingModel, "...")
 	// Get tiktoken encoding for the model
 	tiktoken, err := tke.EncodingForModel(EmbeddingModel)
 	if err != nil {
 		return []Chunk{}, fmt.Errorf("getEncoding: %v", err)
 	}
 
-	newData := make([]Chunk, 0)
-	position := 0
-	i := 0
+	chunkStart := 0
 
-	for i < len(sentences) {
-		chunkTokens := 0
-		chunkSentences := []*s.Sentence{}
+	for chunkStart < len(sentences) {
+		tokenCount := 0
+		chunkText := ""
+		chunkSentences := 0
 
-		// Add sentences to the chunk until the token limit is reached
-		for i < len(sentences) {
-			tiktokens := tiktoken.Encode(sentences[i].Text, nil, nil)
-			tokenCount := len(tiktokens)
-			fmt.Printf(
-				"[CreateChunks] #%d Token count: %d | Total number of sentences: %d | Sentence: %s\n",
-				i, tokenCount, len(sentences), sentences[i].Text)
+		for i := chunkStart; i < len(sentences) && tokenCount < MaxTokensPerChunk; i++ {
+			sentence := sentences[i].Text
+			tiktokens := tiktoken.Encode(sentence, nil, nil)
+			sentenceTokenCount := len(tiktokens)
 
-			if chunkTokens+tokenCount <= MaxTokensPerChunk {
-				chunkSentences = append(chunkSentences, sentences[i])
-				chunkTokens += tokenCount
-				i++
+			if sentenceTokenCount > MaxTokensPerChunk {
+				continue // Skip sentence if longer than MaxTokensPerChunk
+			}
+
+			if tokenCount+sentenceTokenCount <= MaxTokensPerChunk {
+				tokenCount += sentenceTokenCount
+				chunkText += " " + sentence
+				chunkSentences++
 			} else {
-				log.Println("[CreateChunks] Adding this sentence would exceed max token limit. Breaking....")
 				break
 			}
 		}
 
-		if len(chunkSentences) > 0 {
-			text := strings.Join(sentencesToStrings(chunkSentences), "")
-
-			start := position
-			end := position + len(text)
-
-			fmt.Printf("[CreateChunks] Created chunk and adding it to the array...\nText: %s\n",
-				text)
-
-			newData = append(newData, Chunk{
-				Start: start,
-				End:   end,
+		trimmedText := strings.TrimSpace(chunkText)
+		if len(trimmedText) > 0 {
+			chunks = append(chunks, Chunk{
+				Start: chunkStart,
+				End:   chunkStart + tokenCount,
 				Title: title,
-				Text:  text,
+				Text:  trimmedText,
 			})
-			fmt.Printf("[CreateChunks] New chunk array length: %d\n",
-				len(newData))
-			position = end
-
-			// Set the stride for overlapping chunks
-			stride := len(chunkSentences) / 2
-			if stride < 1 {
-				stride = 1
-			}
-
-			oldI := i
-			i -= stride
-
-			// Check if the next sentence would still fit within the token limit
-			nextTokens := tiktoken.Encode(sentences[i].Text, nil, nil)
-			nextTokenCount := len(nextTokens)
-
-			if chunkTokens+nextTokenCount <= MaxTokensPerChunk {
-				// Increment i without applying the stride
-				i = oldI + 1
-			} else if i == oldI {
-				// Ensure i is always incremented to avoid an infinite loop
-				i++
-			}
-
 		}
+
+		// Calculate stride dynamically based on chunk sentences
+		sentenceStride := chunkSentences / 5
+		if sentenceStride == 0 {
+			sentenceStride = 1
+		}
+
+		// Move chunkStart forward by sentenceStride
+		chunkStart += sentenceStride
 	}
 
-	return newData, nil
+	if len(chunks) == 0 {
+		return nil, errors.New("no chunks created")
+	}
+
+	return chunks, nil
 }
 
 func sentencesToStrings(sentences []*s.Sentence) []string {

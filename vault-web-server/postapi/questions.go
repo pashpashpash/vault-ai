@@ -49,7 +49,7 @@ func QuestionHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("[QuestionHandler] Question Embedding Length:", len(questionEmbedding))
 
 	// step 2: Query Pinecone using questionEmbedding to get context matches
-	matches, err := retrieve(questionEmbedding, 3, form.UUID)
+	matches, err := retrieve(questionEmbedding, 4, form.UUID)
 	if err != nil {
 		log.Println("[QuestionHandler ERR] Pinecone query error\n", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
