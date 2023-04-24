@@ -3,14 +3,8 @@ package postapi
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"log"
-	"mime/multipart"
 	"net/http"
-	"strings"
-
-	"code.sajari.com/docconv"
 
 	openai "github.com/sashabaranov/go-openai"
 )
@@ -99,16 +93,14 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 		} else {
-			fileBytes, err := ioutil.ReadAll(f)
+			fileContent, err = getTextFromFile(f)
 			if err != nil {
-				errMsg := "Error reading file bytes"
+				errMsg := "Error reading file"
 				log.Println("[UploadHandler ERR]", errMsg, err)
 				responseData.NumFilesFailed++
 				responseData.FailedFileNames[fileName] = errMsg
 				continue
 			}
-
-			fileContent = string(fileBytes)
 		}
 
 		if len(fileContent) > 32 {
@@ -117,7 +109,14 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("File Name: %s, File Type: %s, File Content (first 32 characters): %s\n", fileName, fileType, filePreview)
 
 		// Process the fileBytes into embeddings and store in Pinecone here
-		chunks := CreateChunks(fileContent, 20, 4, fileName)
+		chunks, err := CreateChunks(fileContent, fileName)
+		if err != nil {
+			errMsg := "Error chunking file"
+			log.Println("[UploadHandler ERR]", errMsg, err)
+			responseData.NumFilesFailed++
+			responseData.FailedFileNames[fileName] = errMsg
+			continue
+		}
 
 		embeddings, err := getEmbeddings(clientToUse, chunks, 100, openai.AdaEmbeddingV2)
 		if err != nil {
@@ -163,24 +162,4 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write(jsonResponse)
-}
-
-// extract human-readable text from a given pdf with support for spaces/whitespace.
-func extractTextFromPDF(f multipart.File, fileSize int64) (string, error) {
-	// Reset the file reader's position
-	_, err := f.Seek(0, io.SeekStart)
-	if err != nil {
-		return "", err
-	}
-
-	// Convert the uploaded file to a human-readable text
-	bodyResult, _, err := docconv.ConvertPDF(f)
-	if err != nil {
-		return "", err
-	}
-
-	// Remove extra whitespace and newlines
-	text := strings.TrimSpace(bodyResult)
-
-	return text, nil
 }
