@@ -24,7 +24,7 @@ I recommend [installing nvm and using it to install node v19](https://medium.com
 
 via uer5305519 and Jeru Luke on [stack overflow](https://stackoverflow.com/questions/18381713/how-to-install-poppler-on-windows)
 
-Go to this page and download the binary of your choice. In this example we will download and use poppler-0.68.0_x86.
+Go to [this page](https://blog.alivate.com.au/poppler-windows/) and download the binary of your choice. In this example we will download and use poppler-0.68.0_x86.
 
 Extract the archive file poppler-0.68.0_x86.7z into C:\Program Files. Thus, the directory structure should look something like this:
 
