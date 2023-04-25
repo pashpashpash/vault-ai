@@ -65,7 +65,7 @@ select <b>New...</b>. Create three new key value pairs:
 
     If you run into issues with this step such as Go reporting incompatibility with your Windows version, you can run the following command from the base of the project folder in bash:
 
-    'env GOOS=windows GOARCH=amd64 go build -o ./bin/vault-web-server.exe ./vault-web-server'
+    `env GOOS=windows GOARCH=amd64 go build -o ./bin/vault-web-server.exe ./vault-web-server`
 
     Based on your system specs, you may need to modify the [GOARCH](https://pkg.go.dev/cmd/go) variable
 
