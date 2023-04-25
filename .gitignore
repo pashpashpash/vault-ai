@@ -19,7 +19,7 @@ node_modules
 
 # Misc
 .DS_Store
-bin
+bin/vault-web-server.exe
 pkg
 static/js
 github.com

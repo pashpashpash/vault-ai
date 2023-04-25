@@ -28,7 +28,7 @@ fi
 # Compile the server
 pretty_echo " Compiling '$TARGET'"
 
-go build -o ../bin/vault-web-server.exe -v
+env GOOS=windows GOARCH=amd64 go build -o ../bin/vault-web-server.exe -v
 RESULT="$?"
 if [ "$RESULT" == "0" ]; then
     echo "   ... done"
