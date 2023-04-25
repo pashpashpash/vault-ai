@@ -1,3 +1,81 @@
+# OP Vault Windows Implementation
+
+This fork is built for Windows and the compile steps will not work on MacOS or Linux.
+
+## Manual Dependencies
+
+-   node: v19
+-   go: v1.18.9 darwin/arm64
+-   poppler
+
+## Setup
+
+### Install manual dependencies
+
+1.  Install go:
+
+Follow the go docs [here](https://go.dev/doc/install)
+
+2.  Install node v19
+
+I recommend [installing nvm and using it to install node v19](https://medium.com/@iam_vinojan/how-to-install-node-js-and-npm-using-node-version-manager-nvm-143165b16ce1)
+
+3.  Install poppler
+
+via uer5305519 and Jeru Luke on [stack overflow](https://stackoverflow.com/questions/18381713/how-to-install-poppler-on-windows)
+
+Go to this page and download the binary of your choice. In this example we will download and use poppler-0.68.0_x86.
+
+Extract the archive file poppler-0.68.0_x86.7z into C:\Program Files. Thus, the directory structure should look something like this:
+
+C:
+└ Program Files
+└ poppler-0.68.0_x86
+└ bin
+└ include
+└ lib
+└ share
+Add C:\Program Files\poppler-0.68.0_x86\bin to your system PATH by doing the following: Click on the Windows start button, search for Edit the system environment variables, click on Environment Variables..., under System variables, look for and double-click on PATH, click on New, then add C:\Users\Program Files\poppler-0.68.0_x86\bin, click OK.
+
+### Set up your API keys and endpoints in System Variables
+
+From the start menu, search for <b>Edit the system environment variables</b>, click on <b>Environment Variables...</b>, then on the lower half of the next dialogue under System Variables,
+select <b>New...</b>. Create three new key value pairs:
+
+1. OPENAI_API_KEY : [OpenAI API Key](https://platform.openai.com/docs/api-reference/authentication)
+2. PINECONE_API_KEY : [Pinecone API key](https://docs.pinecone.io/docs/quickstart#2-get-and-verify-your-pinecone-api-key)
+3. PINECONE_API_ENDPOINT : https://[Pinecone API endpoint](https://app.pinecone.io/organizations/)
+
+<b>IF YOU DON'T APPEND HTTPS:// TO YOUR ENDPOINT, IT WILL FAIL</b>
+
+### Running the development environment
+
+1. Within the project folder, create an empty 'bin' folder.
+
+<b> Use Git Bash for the following commands </b>
+
+2.  Install javascript package dependencies:
+
+    `npm install`
+
+3.  Run the golang webserver (default port `:8100`):
+
+    `npm start`
+
+    If you run into issues with this step such as Go reporting incompatibility with your Windows version, you can run the following command from the base of the project folder in bash:
+
+    'env GOOS=windows GOARCH=amd64 go build -o ./bin/vault-web-server.exe ./vault-web-server'
+
+    Based on your system specs, you may need to modify the [GOARCH](https://pkg.go.dev/cmd/go) variable
+
+4.  In another terminal window, run webpack to compile the js code and create a bundle.js file:
+
+    `npm run dev`
+
+5.  Visit the local version of the site at http://localhost:8100
+
+from the source repo:
+
 # OP Vault
 
 OP Vault uses the OP Stack (OpenAI + Pinecone Vector Database) to enable users to upload their own custom knowledgebase files and ask questions about their contents.
@@ -34,7 +112,7 @@ With The Vault, you can:
 
 Follow the go docs [here](https://go.dev/doc/install)
 
-2.  Install node v19 
+2.  Install node v19
 
 I recommend [installing nvm and using it to install node v19](https://medium.com/@iam_vinojan/how-to-install-node-js-and-npm-using-node-version-manager-nvm-143165b16ce1)
 
