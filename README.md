@@ -47,7 +47,7 @@ select <b>New...</b>. Create three new key value pairs:
 2. PINECONE_API_KEY : [Pinecone API key](https://docs.pinecone.io/docs/quickstart#2-get-and-verify-your-pinecone-api-key)
 3. PINECONE_API_ENDPOINT : https://[Pinecone API endpoint](https://app.pinecone.io/organizations/)
 
-<b>IF YOU DON'T APPEND HTTPS:// TO YOUR ENDPOINT, IT WILL FAIL</b>
+<b>IF YOU DON'T PREPEND HTTPS:// TO YOUR ENDPOINT, IT WILL FAIL</b>
 
 ### Running the development environment
 
