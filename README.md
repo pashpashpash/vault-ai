@@ -35,6 +35,7 @@ C:
 └ include
 └ lib
 └ share
+
 Add C:\Program Files\poppler-0.68.0_x86\bin to your system PATH by doing the following: Click on the Windows start button, search for Edit the system environment variables, click on Environment Variables..., under System variables, look for and double-click on PATH, click on New, then add C:\Users\Program Files\poppler-0.68.0_x86\bin, click OK.
 
 ### Set up your API keys and endpoints in System Variables
