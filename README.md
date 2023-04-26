@@ -49,6 +49,8 @@ select <b>New...</b>. Create three new key value pairs:
 
 <b>IF YOU DON'T PREPEND HTTPS:// TO YOUR ENDPOINT, IT WILL FAIL</b>
 
+When setting up your pinecone index, use a vector size of `1536` and keep all the default settings the same.
+
 ### Running the development environment
 
 1. Within the project folder, create an empty 'bin' folder.
