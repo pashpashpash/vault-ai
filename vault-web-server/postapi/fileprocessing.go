@@ -7,7 +7,6 @@ import (
 	"mime/multipart"
 	"strings"
 
-	s "github.com/neurosnap/sentences"
 	"github.com/neurosnap/sentences/english"
 	tke "github.com/pkoukk/tiktoken-go"
 	"golang.org/x/text/encoding/unicode"
@@ -27,18 +26,9 @@ type Chunk struct {
 
 // MaxTokensPerChunk is the maximum number of tokens allowed in a single chunk for OpenAI embeddings
 // MaxTokensPerChunk is the maximum number of tokens allowed in a single chunk for OpenAI embeddings
-const MaxTokensPerChunk = 1000
+const MaxTokensPerChunk = 1500
 const EmbeddingModel = "text-embedding-ada-002"
 
-// Take file content, split it into sentences using neurosnap/sentences library
-// Start building chunks up to the MaxTokensPerChunk token limit
-// Use tiktoken-go to estimate token count
-// Once a chunk is full, move on to the next chunk until the entire content is covered
-// Use a dynamically set stride so that Chunks overlap each other by 10 sentences
-// Skip any sentence that is longer than MaxTokensPerChunk
-// All returned Chunks must have a non-empty Text contents
-// All lengths of files/sentences should be handled, including edge cases
-// There should be no chance of looping forever
 func CreateChunks(fileContent string, title string) ([]Chunk, error) {
 	chunks := []Chunk{}
 
@@ -102,14 +92,6 @@ func CreateChunks(fileContent string, title string) ([]Chunk, error) {
 	}
 
 	return chunks, nil
-}
-
-func sentencesToStrings(sentences []*s.Sentence) []string {
-	strs := make([]string, len(sentences))
-	for i, s := range sentences {
-		strs[i] = s.Text
-	}
-	return strs
 }
 
 func getTextFromFile(f multipart.File) (string, error) {
