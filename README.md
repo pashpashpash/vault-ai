@@ -1,6 +1,24 @@
-# OP Vault Windows Implementation
+# OP Vault
 
-This fork is built for Windows and the compile steps will not work on MacOS or Linux.
+OP Vault uses the OP Stack (OpenAI + Pinecone Vector Database) to enable users to upload their own custom knowledgebase files and ask questions about their contents.
+
+[vault.pash.city](https://vault.pash.city)
+
+<img width="512" alt="Screen Shot 2023-04-09 at 1 53 33 AM" src="/static/img/common/vault_library.png">
+
+With quick setup, you can launch your own version of this Golang server along with a user-friendly React frontend that allows users to ask OpenAI questions about the specific knowledge base provided. The primary focus is on human-readable content like books, letters, and other documents, making it a practical and valuable tool for knowledge extraction and question-answering. You can upload an entire library's worth of books and documents and recieve pointed answers along with the name of the file and specific section within the file that the answer is based on!
+
+<img width="1498" alt="Screen Shot 2023-04-17 at 6 23 00 PM" src="https://user-images.githubusercontent.com/20898225/232645187-fff56d2b-f654-4c92-b061-4670734b2764.png">
+
+## What can you do with OP Vault?
+
+With The Vault, you can:
+
+-   Upload a variety of popular document types via a simple react frontend to create a custom knowledge base
+-   Retrieve accurate and relevant answers based on the content of your uploaded documents
+-   See the filenames and specific context snippets that inform the answer
+-   Explore the power of the OP Stack (OpenAI + Pinecone Vector Database) in a user-friendly interface
+-   Load entire libraries' worth of books into The Vault
 
 ## Manual Dependencies
 
@@ -8,7 +26,55 @@ This fork is built for Windows and the compile steps will not work on MacOS or L
 -   go: v1.18.9 darwin/arm64
 -   poppler
 
-## Setup
+## MacOS/Linux Setup
+
+### Install manual dependencies
+
+1.  Install go:
+
+Follow the go docs [here](https://go.dev/doc/install)
+
+2.  Install node v19
+
+I recommend [installing nvm and using it to install node v19](https://medium.com/@iam_vinojan/how-to-install-node-js-and-npm-using-node-version-manager-nvm-143165b16ce1)
+
+3.  Install poppler
+
+`sudo apt-get install -y poppler-utils` on Ubuntu, or `brew install poppler` on Mac
+
+### Set up your API keys and endpoints in the `secret` folder
+
+1.  Create a new file `secret/openai_api_key` and paste your [OpenAI API key](https://platform.openai.com/docs/api-reference/authentication) into it:
+
+`echo "your_openai_api_key_here" > secret/openai_api_key`
+
+2.  Create a new file `secret/pinecone_api_key` and paste your [Pinecone API key](https://docs.pinecone.io/docs/quickstart#2-get-and-verify-your-pinecone-api-key) into it:
+
+`echo "your_pinecone_api_key_here" > secret/pinecone_api_key`
+
+When setting up your pinecone index, use a vector size of `1536` and keep all the default settings the same.
+
+3.  Create a new file `secret/pinecone_api_endpoint` and paste your [Pinecone API endpoint](https://app.pinecone.io/organizations/) into it:
+
+`echo "https://example-50709b5.svc.asia-southeast1-gcp.pinecone.io" > secret/pinecone_api_endpoint`
+
+### Running the development environment
+
+1.  Install javascript package dependencies:
+
+    `npm install`
+
+2.  Run the golang webserver (default port `:8100`):
+
+    `npm start`
+
+3.  In another terminal window, run webpack to compile the js code and create a bundle.js file:
+
+    `npm run dev`
+
+4.  Visit the local version of the site at http://localhost:8100
+
+## Windows Setup
 
 ### Install manual dependencies
 
@@ -74,84 +140,6 @@ select <b>New...</b>. Create three new key value pairs:
     `npm run dev`
 
 5.  Visit the local version of the site at http://localhost:8100
-
-from the source repo:
-
-# OP Vault
-
-OP Vault uses the OP Stack (OpenAI + Pinecone Vector Database) to enable users to upload their own custom knowledgebase files and ask questions about their contents.
-
-[vault.pash.city](https://vault.pash.city)
-
-<img width="512" alt="Screen Shot 2023-04-09 at 1 53 33 AM" src="/static/img/common/vault_library.png">
-
-With quick setup, you can launch your own version of this Golang server along with a user-friendly React frontend that allows users to ask OpenAI questions about the specific knowledge base provided. The primary focus is on human-readable content like books, letters, and other documents, making it a practical and valuable tool for knowledge extraction and question-answering. You can upload an entire library's worth of books and documents and recieve pointed answers along with the name of the file and specific section within the file that the answer is based on!
-
-<img width="1498" alt="Screen Shot 2023-04-17 at 6 23 00 PM" src="https://user-images.githubusercontent.com/20898225/232645187-fff56d2b-f654-4c92-b061-4670734b2764.png">
-
-## What can you do with OP Vault?
-
-With The Vault, you can:
-
--   Upload a variety of popular document types via a simple react frontend to create a custom knowledge base
--   Retrieve accurate and relevant answers based on the content of your uploaded documents
--   See the filenames and specific context snippets that inform the answer
--   Explore the power of the OP Stack (OpenAI + Pinecone Vector Database) in a user-friendly interface
--   Load entire libraries' worth of books into The Vault
-
-## Manual Dependencies
-
--   node: v19
--   go: v1.18.9 darwin/arm64
--   poppler
-
-## Setup
-
-### Install manual dependencies
-
-1.  Install go:
-
-Follow the go docs [here](https://go.dev/doc/install)
-
-2.  Install node v19
-
-I recommend [installing nvm and using it to install node v19](https://medium.com/@iam_vinojan/how-to-install-node-js-and-npm-using-node-version-manager-nvm-143165b16ce1)
-
-3.  Install poppler
-
-`sudo apt-get install -y poppler-utils` on Ubuntu, or `brew install poppler` on Mac
-
-### Set up your API keys and endpoints in the `secret` folder
-
-1.  Create a new file `secret/openai_api_key` and paste your [OpenAI API key](https://platform.openai.com/docs/api-reference/authentication) into it:
-
-`echo "your_openai_api_key_here" > secret/openai_api_key`
-
-2.  Create a new file `secret/pinecone_api_key` and paste your [Pinecone API key](https://docs.pinecone.io/docs/quickstart#2-get-and-verify-your-pinecone-api-key) into it:
-
-`echo "your_pinecone_api_key_here" > secret/pinecone_api_key`
-
-When setting up your pinecone index, use a vector size of `1536` and keep all the default settings the same.
-
-3.  Create a new file `secret/pinecone_api_endpoint` and paste your [Pinecone API endpoint](https://app.pinecone.io/organizations/) into it:
-
-`echo "https://example-50709b5.svc.asia-southeast1-gcp.pinecone.io" > secret/pinecone_api_endpoint`
-
-### Running the development environment
-
-1.  Install javascript package dependencies:
-
-    `npm install`
-
-2.  Run the golang webserver (default port `:8100`):
-
-    `npm start`
-
-3.  In another terminal window, run webpack to compile the js code and create a bundle.js file:
-
-    `npm run dev`
-
-4.  Visit the local version of the site at http://localhost:8100
 
 ## Screenshots:
 
