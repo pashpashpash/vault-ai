@@ -1,51 +1,57 @@
 {
-  "name": "vault-web-server",
-  "private": true,
-  "version": "1.0.0",
-  "description": "vault core website",
-  "main": "index.js",
-  "scripts": {
-    "start": "source ./scripts/source-me.sh && ./scripts/go-compile.sh ./vault-web-server && echo && ./bin/vault-web-server",
-    "dev": "webpack --progress --watch",
-    "postinstall": "source ./scripts/source-me.sh && ./scripts/go-compile.sh ./vault-web-server"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/pashpashpash/vault.git"
-  },
-  "author": "pashpashpash",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/pashpashpash/vault/issues"
-  },
-  "homepage": "https://github.com/pashpashpash/vault#readme",
-  "dependencies": {
-    "@babel/plugin-transform-runtime": "^7.21.4",
-    "crypto-browserify": "^3.12.0",
-    "https-browserify": "^1.0.0",
-    "os-browserify": "0.3.0",
-    "prop-types": "15.7.2",
-    "react": "17.0.2",
-    "react-dropzone": "^14.2.3",
-    "react-router-dom": "4.3.1",
-    "stream-http": "3.2.0",
-    "url-parse": "^1.5.10",
-    "uuid": "^9.0.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.0",
-    "@babel/preset-flow": "^7.16.0",
-    "@babel/preset-react": "^7.16.0",
-    "babel-loader": "^8.2.3",
-    "css-loader": "^6.5.1",
-    "less": "^4.1.2",
-    "less-loader": "^10.2.0",
-    "npm": "^8.12.1",
-    "react-dom": "^17.0.2",
-    "stream-browserify": "^3.0.0",
-    "style-loader": "^3.3.1",
-    "webpack": "^5.64.0",
-    "webpack-cli": "^5.0.1"
-  }
+    "name": "vault-web-server",
+    "private": true,
+    "version": "1.0.0",
+    "description": "vault core website",
+    "main": "index.js",
+    "scripts": {
+        "dev": "webpack --progress --watch",
+        "start": "run-script-os",
+        "postinstall": "run-script-os",
+        "start:win32": "bash ./scripts/go-compile-windows.sh ./vault-web-server && echo && %CD%/bin/vault-web-server.exe",
+        "postinstall:win32": "bash ./scripts/go-compile-windows.sh ./vault-web-server",
+        "start:darwin:linux": "source ./scripts/source-me.sh && ./scripts/go-compile.sh ./vault-web-server && echo && ./bin/vault-web-server",
+        "postinstall:darwin:linux": "source ./scripts/source-me.sh && ./scripts/go-compile.sh ./vault-web-server"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/pashpashpash/vault.git"
+    },
+    "author": "pashpashpash",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/pashpashpash/vault/issues"
+    },
+    "homepage": "https://github.com/pashpashpash/vault#readme",
+    "dependencies": {
+        "@babel/plugin-transform-runtime": "^7.21.4",
+        "crypto-browserify": "^3.12.0",
+        "https-browserify": "^1.0.0",
+        "os-browserify": "0.3.0",
+        "prop-types": "15.7.2",
+        "react": "17.0.2",
+        "react-dropzone": "^14.2.3",
+        "react-router-dom": "4.3.1",
+        "stream-http": "3.2.0",
+        "url-parse": "^1.5.10",
+        "uuid": "^9.0.0"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.16.0",
+        "@babel/preset-env": "^7.16.0",
+        "@babel/preset-flow": "^7.16.0",
+        "@babel/preset-react": "^7.16.0",
+        "babel-loader": "^8.2.3",
+        "cross-env": "^7.0.3",
+        "css-loader": "^6.5.1",
+        "less": "^4.1.2",
+        "less-loader": "^10.2.0",
+        "npm": "^8.12.1",
+        "react-dom": "^17.0.2",
+        "run-script-os": "^1.1.6",
+        "stream-browserify": "^3.0.0",
+        "style-loader": "^3.3.1",
+        "webpack": "^5.64.0",
+        "webpack-cli": "^5.0.1"
+    }
 }
