@@ -15,6 +15,7 @@ import (
 const (
 	VECTOR_SIZE     = 1536 // ada002
 	VECTOR_DISTANCE = "Cosine"
+	BATCH_SIZE      = 500
 )
 
 type Qdrant struct {
@@ -141,29 +142,34 @@ func (q *Qdrant) UpsertEmbeddings(embeddings [][]float32, chunks []chunk.Chunk, 
 		}
 	}
 
-	data := map[string][]Point{"points": points}
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
+	for i := 0; i < len(points); i += BATCH_SIZE {
+		end := i + BATCH_SIZE
+		if end > len(points) {
+			end = len(points)
+		}
 
-	fmt.Printf("JSON data: %s\n", string(jsonData))
+		data := map[string][]Point{"points": points[i:end]}
+		jsonData, err := json.Marshal(data)
+		if err != nil {
+			return err
+		}
 
-	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/collections/%s/points?wait=true", q.Endpoint, uuid), bytes.NewBuffer(jsonData))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Content-Type", "application/json")
+		req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/collections/%s/points", q.Endpoint, uuid), bytes.NewBuffer(jsonData))
+		if err != nil {
+			return err
+		}
+		req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("failed to upsert embeddings, status code: %d", resp.StatusCode)
+		if resp.StatusCode != http.StatusOK {
+			return fmt.Errorf("failed to upsert embeddings, status code: %d", resp.StatusCode)
+		}
 	}
 
 	return nil
