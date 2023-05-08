@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/pashpashpash/vault/chunk"
 	"github.com/pkoukk/tiktoken-go"
 	openai "github.com/sashabaranov/go-openai"
 )
@@ -132,7 +133,7 @@ func callEmbeddingAPIWithRetry(client *openai.Client, texts []string, embedModel
 	return nil, err
 }
 
-func getEmbeddings(client *openai.Client, chunks []Chunk, batchSize int,
+func getEmbeddings(client *openai.Client, chunks []chunk.Chunk, batchSize int,
 	embedModel openai.EmbeddingModel) ([][]float32, error) {
 	embeddings := make([][]float32, 0, len(chunks))
 

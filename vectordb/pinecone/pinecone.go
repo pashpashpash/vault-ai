@@ -1,4 +1,4 @@
-package postapi
+package pinecone
 
 import (
 	"bytes"
@@ -11,6 +11,9 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+
+	"github.com/pashpashpash/vault/chunk"
+	"github.com/pashpashpash/vault/vectordb"
 )
 
 type PineconeVector struct {
@@ -19,9 +22,21 @@ type PineconeVector struct {
 	Metadata map[string]string `json:"metadata,omitempty"`
 }
 
-func upsertEmbeddingsToPinecone(embeddings [][]float32, chunks []Chunk, uuid string) error {
+type Pinecone struct {
+	Endpoint string
+	ApiKey   string
+}
+
+func New(apiKey string, endpoint string) (*Pinecone, error) {
+	return &Pinecone{
+		Endpoint: endpoint,
+		ApiKey:   apiKey,
+	}, nil
+}
+
+func (p *Pinecone) UpsertEmbeddings(embeddings [][]float32, chunks []chunk.Chunk, uuid string) error {
 	// Prepare URL
-	url := PINECONE_API_ENDPOINT + "/vectors/upsert"
+	url := p.Endpoint + "/vectors/upsert"
 
 	// Prepare the vectors
 	vectors := make([]PineconeVector, len(embeddings))
@@ -67,7 +82,7 @@ func upsertEmbeddingsToPinecone(embeddings [][]float32, chunks []Chunk, uuid str
 		}
 
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Api-Key", PINECONE_API_KEY)
+		req.Header.Set("Api-Key", p.ApiKey)
 
 		// Send HTTP request
 		client := &http.Client{}
@@ -97,21 +112,15 @@ type PineconeQueryItem struct {
 	Values []float32 `json:"values"`
 }
 
-type PineconeQueryMatch struct {
-	ID       string            `json:"id"`
-	Score    float32           `json:"score"` // Use "score" instead of "distance"
-	Metadata map[string]string `json:"metadata"`
-}
-
 type PineconeQueryResponseResult struct {
-	Matches []PineconeQueryMatch `json:"matches"`
+	Matches []vectordb.QueryMatch `json:"matches"`
 }
 
 type PineconeQueryResponse struct {
 	Results []PineconeQueryResponseResult `json:"results"`
 }
 
-func retrieve(questionEmbedding []float32, topK int, uuid string) ([]PineconeQueryMatch, error) {
+func (p *Pinecone) Retrieve(questionEmbedding []float32, topK int, uuid string) ([]vectordb.QueryMatch, error) {
 	// Prepare the Pinecone query request
 	requestBody, _ := json.Marshal(PineconeQueryRequest{
 		TopK:            topK,
@@ -126,10 +135,10 @@ func retrieve(questionEmbedding []float32, topK int, uuid string) ([]PineconeQue
 
 	log.Println("[retrieve] Querying pinecone namespace:", uuid)
 	// Send the Pinecone query request
-	pineconeIndexURL := PINECONE_API_ENDPOINT + "/query"
+	pineconeIndexURL := p.Endpoint + "/query"
 	req, _ := http.NewRequest("POST", pineconeIndexURL, bytes.NewBuffer(requestBody))
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Api-Key", PINECONE_API_KEY)
+	req.Header.Set("Api-Key", p.ApiKey)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)

@@ -21,7 +21,7 @@ type Answer struct {
 }
 
 // Handle Requests For Question
-func QuestionHandler(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) QuestionHandler(w http.ResponseWriter, r *http.Request) {
 	form := new(form.QuestionForm)
 
 	if errs := FormParseVerify(form, "QuestionForm", w, r); errs != nil {
@@ -33,7 +33,7 @@ func QuestionHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("[QuestionHandler] UUID:", form.UUID)
 	log.Println("[QuestionHandler] ApiKey:", form.ApiKey)
 
-	clientToUse := DEFAULT_OPENAI_CLIENT
+	clientToUse := ctx.openAIClient
 	if form.ApiKey != "" {
 		log.Println("[QuestionHandler] Using provided custom API key:", form.ApiKey)
 		clientToUse = openai.NewClient(form.ApiKey)
@@ -49,7 +49,7 @@ func QuestionHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("[QuestionHandler] Question Embedding Length:", len(questionEmbedding))
 
 	// step 2: Query Pinecone using questionEmbedding to get context matches
-	matches, err := retrieve(questionEmbedding, 4, form.UUID)
+	matches, err := ctx.vectorDB.Retrieve(questionEmbedding, 4, form.UUID)
 	if err != nil {
 		log.Println("[QuestionHandler ERR] Pinecone query error\n", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)

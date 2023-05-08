@@ -6,34 +6,10 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/schema"
 	"github.com/pashpashpash/vault/errorlist"
 	"github.com/pashpashpash/vault/form"
-	"github.com/pashpashpash/vault/serverutil"
-
-	"github.com/gorilla/schema"
-	cache "github.com/patrickmn/go-cache"
-	openai "github.com/sashabaranov/go-openai"
 )
-
-var (
-	CONFIG                = serverutil.GetConfig()
-	C                     *cache.Cache
-	DEFAULT_OPENAI_CLIENT         *openai.Client
-	PINECONE_API_KEY      = ""
-	PINECONE_API_ENDPOINT = ""
-)
-
-type Config struct {
-	Debug bool
-}
-
-// Must be called to set up this module before use
-func Run(openaiClient *openai.Client, pineconeApiKey string, pineconeApiEndpoint string) {
-	C = cache.New(cache.NoExpiration, cache.NoExpiration)
-	DEFAULT_OPENAI_CLIENT = openaiClient
-	PINECONE_API_KEY = pineconeApiKey
-	PINECONE_API_ENDPOINT = pineconeApiEndpoint
-}
 
 // Util: does grunt work of decoding + verifying form + writing errors back
 func FormParseVerify(form form.Form, name string, w http.ResponseWriter, r *http.Request) errorlist.Errors {

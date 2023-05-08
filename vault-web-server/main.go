@@ -17,6 +17,7 @@ import (
 	"io"
 
 	"github.com/pashpashpash/vault/serverutil"
+	"github.com/pashpashpash/vault/vectordb/pinecone"
 
 	"github.com/pashpashpash/vault/vault-web-server/postapi"
 
@@ -64,8 +65,12 @@ func main() {
 		log.Fatalln("MISSING PINECONE API ENDPOINT ENV VARIABLE")
 	}
 
-	// Initialize modules
-	postapi.Run(openaiClient, pineconeApiKey, pineconeApiEndpoint)
+	vectordb, err := pinecone.New(pineconeApiEndpoint, pineconeApiKey)
+	if err != nil {
+		log.Fatalln("ERROR INITIALIZING PINECONE:", err)
+	}
+
+	handlerContext := postapi.NewHandlerContext(openaiClient, vectordb)
 
 	// Configure main web server
 	server := negroni.New()
@@ -77,8 +82,8 @@ func main() {
 	mx := mux.NewRouter()
 
 	// Path Routing Rules: [POST]
-	mx.HandleFunc("/api/questions", postapi.QuestionHandler).Methods("POST")
-	mx.HandleFunc("/upload", postapi.UploadHandler).Methods("POST")
+	mx.HandleFunc("/api/questions", handlerContext.QuestionHandler).Methods("POST")
+	mx.HandleFunc("/upload", handlerContext.UploadHandler).Methods("POST")
 
 	// Path Routing Rules: Static Handlers
 	mx.HandleFunc("/github", StaticRedirectHandler("https://github.com/pashpashpash/vault"))
@@ -99,7 +104,7 @@ func main() {
 	}
 }
 
-/// Takes a response writer Meta config and URL and servers the react app with the correct metadata
+// / Takes a response writer Meta config and URL and servers the react app with the correct metadata
 func ServeIndex(w http.ResponseWriter, r *http.Request, meta serverutil.SiteConfig) {
 	//Here we handle the possible dev environments or pass the basic Hostpath with "/" at the end for the / metadata for each site
 	var currentHost string
