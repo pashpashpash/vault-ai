@@ -109,7 +109,7 @@ func (ctx *HandlerContext) UploadHandler(w http.ResponseWriter, r *http.Request)
 		}
 		log.Printf("File Name: %s, File Type: %s, File Content (first 32 characters): %s\n", fileName, fileType, filePreview)
 
-		// Process the fileBytes into embeddings and store in Pinecone here
+		// Process the fileBytes into embeddings and store in vector DB here
 		chunks, err := chunk.CreateChunks(fileContent, fileName)
 		if err != nil {
 			errMsg := "Error chunking file"
@@ -131,17 +131,16 @@ func (ctx *HandlerContext) UploadHandler(w http.ResponseWriter, r *http.Request)
 		fmt.Printf("Total embeddings: %d\n", len(embeddings))
 		fmt.Printf("Embeddings length: %d\n", len(embeddings[0]))
 
-		// Call the upsertEmbeddingsToPinecone function
 		err = ctx.vectorDB.UpsertEmbeddings(embeddings, chunks, uuid)
 		if err != nil {
-			errMsg := fmt.Sprintf("Error upserting embeddings to Pinecone: %v", err)
+			errMsg := fmt.Sprintf("Error upserting embeddings to vector DB: %v", err)
 			log.Println("[UploadHandler ERR]", errMsg)
 			responseData.NumFilesFailed++
 			responseData.FailedFileNames[fileName] = errMsg
 			continue
 		}
 
-		log.Println("Successfully added pinecone embeddings!")
+		log.Println("Successfully added vector DB embeddings!")
 
 		responseData.NumFilesSucceeded++
 		responseData.SuccessfulFileNames = append(responseData.SuccessfulFileNames, fileName)
