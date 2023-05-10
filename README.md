@@ -1,4 +1,4 @@
-# OP Vault
+# **OP Vault**
 
 OP Vault uses the OP Stack (OpenAI + Pinecone Vector Database) to enable users to upload their own custom knowledgebase files and ask questions about their contents.
 
