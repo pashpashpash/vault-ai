@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { marked } from 'marked';
 import { useDropzone } from 'react-dropzone';
 import Page from '../../Page';
 import PostAPI from '../../Util/PostAPI';
@@ -37,9 +38,16 @@ const ContextSnippet = ({ context, index }) => {
 };
 
 const ResponseDisplay = ({ response }) => {
+    if (!response) return null;
+    
+    const renderedMarkdown = marked(response.answer);
+
     return (
         <div className={s.responseDisplay}>
-            <div className={s.answer}>{response.answer}</div>
+            <div
+                className={s.answer}
+                dangerouslySetInnerHTML={{ __html: renderedMarkdown }}
+            />
             <div className={s.contexts}>
                 {response.context.map((context, index) => (
                     <ContextSnippet
