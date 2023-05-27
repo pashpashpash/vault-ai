@@ -95,7 +95,7 @@ func main() {
 		log.Println("[negroni] listening on :443")
 		log.Fatal(http.ListenAndServeTLS(":"+*port, certFile, keyFile, server))
 	} else {
-		server.Run(":" + *port)
+		server.Run("0.0.0.0:" + *port)
 	}
 }
 

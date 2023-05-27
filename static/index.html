@@ -37,21 +37,6 @@
         window.SITE = {{.Config.Site}};
     </script>
 
-    <!-- GHETTO HTTPS REDIRECT SINCE IT'S HARD IN KUBERNETES -->
-    <script type="text/javascript">
-        (function () {
-            if (
-                location.hostname !== 'localhost' &&
-                location.protocol !== 'https:'
-            ) {
-                location.replace(
-                    'https:' +
-                    location.href.substring(location.protocol.length)
-                );
-            }
-        })();
-    </script>
-
     <!-- Main App React Stuff -->
     <div id="app"></div>
     <script type="text/javascript">

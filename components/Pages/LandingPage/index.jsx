@@ -60,15 +60,8 @@ const LandingPage = (props: Props): React.Node => {
     const [errorMessage, setErrorMessage] = useState('');
     const [response, setResponse] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [apiKey, setApiKey] = useState('');
-    const [apiKeyApplied, setApiKeyApplied] = useState(false);
 
-    React.useEffect(() => {
-        const savedApiKey = localStorage.getItem('openai-api-key');
-        if (savedApiKey) {
-            setApiKeyApplied(true);
-        }
-    }, []);
+    React.useEffect(() => {}, []);
 
     const handleAskQuestion = () => {
         // Perform question submission here
@@ -93,19 +86,19 @@ const LandingPage = (props: Props): React.Node => {
             });
     };
 
-    React.useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.key === 'Enter' && !loading && question) {
-                handleAskQuestion();
-            }
-        };
+	React.useEffect(() => {
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && e.ctrlKey && !loading && question) {
+            handleAskQuestion();
+        }
+    };
 
-        document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
 
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [loading, question]);
+    return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+    };
+}, [loading, question]);
 
     const handleFileUpload = (files) => {
         setUploadedFiles([]);
@@ -141,11 +134,6 @@ const LandingPage = (props: Props): React.Node => {
 
     const failedFilenames = Object.keys(failedFiles);
 
-    const handleApplyKey = () => {
-        localStorage.setItem('openai-api-key', apiKey); // Save the new UUID to local storage
-        setApiKeyApplied(true);
-    };
-
     return (
         <Page
             pageClass={s.page}
@@ -171,11 +159,11 @@ const LandingPage = (props: Props): React.Node => {
                             </p>
                         </div>
                         <div className={s.questionInput}>
-                            <input
-                                type="text"
+                            <textarea
                                 value={question}
                                 onChange={(e) => setQuestion(e.target.value)}
                                 placeholder="Enter your question here..."
+                                className={s.textarea}
                             />
                             <button
                                 onClick={handleAskQuestion}
@@ -189,35 +177,6 @@ const LandingPage = (props: Props): React.Node => {
                             </button>
                             {loading && <div className={s.loader} />}
                         </div>
-                        {!apiKeyApplied && (
-                            <div className={s.questionInput}>
-                                <input
-                                    type="text"
-                                    value={apiKey}
-                                    onChange={(e) => setApiKey(e.target.value)}
-                                    placeholder="Enter your OpenAI API key here..."
-                                />
-                                <button
-                                    onClick={handleApplyKey}
-                                    className={s.askQuestion}>
-                                    Apply
-                                </button>
-                            </div>
-                        )}
-                        {!apiKeyApplied && (
-                            <div className={s.tokenCount}>
-                                To get an API key, visit the{' '}
-                                <Go to="https://platform.openai.com/account/api-keys">
-                                    <span
-                                        style={{
-                                            fontWeight: 900,
-                                            textDecoration: 'underline',
-                                        }}>
-                                        OpenAI API Keys Page
-                                    </span>
-                                </Go>
-                            </div>
-                        )}
                         {response?.tokens && (
                             <div className={s.tokenCount}>
                                 TOTAL TOKENS USED:{' '}
