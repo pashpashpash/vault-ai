@@ -36,7 +36,7 @@ With The Vault, you can:
 
 Follow the go docs [here](https://go.dev/doc/install)
 
-2.  Install node v19 
+2.  Install node v19
 
 I recommend [installing nvm and using it to install node v19](https://medium.com/@iam_vinojan/how-to-install-node-js-and-npm-using-node-version-manager-nvm-143165b16ce1)
 
@@ -162,3 +162,7 @@ I hope you enjoy it (:
 ## Uploading larger files
 
 I currently have the max individual file size set to 3MB. If you want to increase this limit, edit the `MAX_FILE_SIZE` and `MAX_TOTAL_UPLOAD_SIZE` constants in [fileupload.go](https://github.com/pashpashpash/vault-ai/blob/master/vault-web-server/postapi/fileupload.go#L26-L27).
+
+### Supported Filetypes
+
+PDFs, .txt, .rtf, and plaintext. .docx support coming soon!
