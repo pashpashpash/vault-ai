@@ -7,8 +7,9 @@
   "scripts": {
     "start": "source ./scripts/source-me.sh && ./scripts/go-compile.sh ./vault-web-server && echo && ./bin/vault-web-server",
     "dev": "webpack --progress --watch",
-    "postinstall": "source ./scripts/source-me.sh && ./scripts/go-compile.sh ./vault-web-server"
-  },
+    "postinstall": "source ./scripts/source-me.sh && ./scripts/go-compile.sh ./vault-web-server",
+    "docker-start": "./scripts/go-compile.sh ./vault-web-server && npm run dev && ./bin/vault-web-server"
+  },  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pashpashpash/vault.git"

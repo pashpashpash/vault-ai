@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  opvault:
+    build: .
+    ports:
+      - "8100:8100"
+    environment:
+      - OPENAI_API_KEY=your_openai_api_key
+      - PINECONE_API_KEY=your_pinecone_api_key
+      - PINECONE_API_ENDPOINT=your_pinecone_api_endpoint

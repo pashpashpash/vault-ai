@@ -28,7 +28,9 @@ With The Vault, you can:
 
 ## Setup
 
-### Install manual dependencies
+### Approach 1: Manual Setup
+
+#### Install manual dependencies
 
 1.  Install go:
 
@@ -42,7 +44,7 @@ I recommend [installing nvm and using it to install node v19](https://medium.com
 
 `sudo apt-get install -y poppler-utils` on Ubuntu, or `brew install poppler` on Mac
 
-### Set up your API keys and endpoints in the `secret` folder
+#### Set up your API keys and endpoints in the `secret` folder
 
 1.  Create a new file `secret/openai_api_key` and paste your [OpenAI API key](https://platform.openai.com/docs/api-reference/authentication) into it:
 
@@ -58,7 +60,7 @@ When setting up your pinecone index, use a vector size of `1536` and keep all th
 
 `echo "https://example-50709b5.svc.asia-southeast1-gcp.pinecone.io" > secret/pinecone_api_endpoint`
 
-### Running the development environment
+#### Running the development environment
 
 1.  Install javascript package dependencies:
 
@@ -73,6 +75,18 @@ When setting up your pinecone index, use a vector size of `1536` and keep all th
     `npm run dev`
 
 4.  Visit the local version of the site at http://localhost:8100
+
+### Approach 2: Docker Compose Setup
+
+1. Make sure you have Docker and Docker Compose installed on your system
+
+2. Set up your API keys and endpoints in the `docker-compose.yml` file's environment section
+
+3. Run `docker-compose up` in the project's root directory
+
+4. Visit the local version of the site at http://localhost:8100
+
+
 
 ## Screenshots:
 
