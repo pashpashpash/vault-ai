@@ -17,7 +17,7 @@ export GOPATH="$HOME/go"
 export PATH="$PATH:$PWD/bin:$PWD/tools/protoc-3.6.1/bin"
 export DOCKER_BUILDKIT=1
 export OPENAI_API_KEY="$(cat ${secrets_path}/openai_api_key)"
-export PINECONE_API_KEY="$(cat ${secrets_path}/pinecone_api_key)"
-export PINECONE_API_ENDPOINT="$(cat ${secrets_path}/pinecone_api_endpoint)"
+export PINECONE_API_KEY="$(cat ${secrets_path}/pinecone_api_key 2>/dev/null)"
+export PINECONE_API_ENDPOINT="$(cat ${secrets_path}/pinecone_api_endpoint 2>/dev/null)"
 
 echo "=> Environment Variables Loaded"

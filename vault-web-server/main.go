@@ -17,6 +17,9 @@ import (
 	"io"
 
 	"github.com/pashpashpash/vault/serverutil"
+	"github.com/pashpashpash/vault/vectordb"
+	"github.com/pashpashpash/vault/vectordb/pinecone"
+	"github.com/pashpashpash/vault/vectordb/qdrant"
 
 	"github.com/pashpashpash/vault/vault-web-server/postapi"
 
@@ -54,18 +57,35 @@ func main() {
 	}
 	openaiClient := openai.NewClient(openaiApiKey)
 
-	pineconeApiKey := os.Getenv("PINECONE_API_KEY")
-	if len(pineconeApiKey) == 0 {
-		log.Fatalln("MISSING PINECONE API KEY ENV VARIABLE")
+	var vectorDB vectordb.VectorDB
+	var err error
+
+	qdrantApiEndpoint := os.Getenv("QDRANT_API_ENDPOINT")
+	if len(qdrantApiEndpoint) != 0 {
+		vectorDB, err = qdrant.New(qdrantApiEndpoint)
+		if err != nil {
+			log.Fatalln("ERROR INITIALIZING QDRANT:", err)
+		}
 	}
 
 	pineconeApiEndpoint := os.Getenv("PINECONE_API_ENDPOINT")
-	if len(pineconeApiEndpoint) == 0 {
-		log.Fatalln("MISSING PINECONE API ENDPOINT ENV VARIABLE")
+	if len(pineconeApiEndpoint) != 0 {
+		pineconeApiKey := os.Getenv("PINECONE_API_KEY")
+		if len(pineconeApiKey) == 0 {
+			log.Fatalln("MISSING PINECONE API KEY ENV VARIABLE")
+		}
+
+		vectorDB, err = pinecone.New(pineconeApiEndpoint, pineconeApiKey)
+		if err != nil {
+			log.Fatalln("ERROR INITIALIZING PINECONE:", err)
+		}
 	}
 
-	// Initialize modules
-	postapi.Run(openaiClient, pineconeApiKey, pineconeApiEndpoint)
+	if vectorDB == nil {
+		log.Fatalln("NO VECTOR DB CONFIGURED (QDRANT_API_ENDPOINT or PINECONE_API_ENDPOINT)")
+	}
+
+	handlerContext := postapi.NewHandlerContext(openaiClient, vectorDB)
 
 	// Configure main web server
 	server := negroni.New()
@@ -77,8 +97,8 @@ func main() {
 	mx := mux.NewRouter()
 
 	// Path Routing Rules: [POST]
-	mx.HandleFunc("/api/questions", postapi.QuestionHandler).Methods("POST")
-	mx.HandleFunc("/upload", postapi.UploadHandler).Methods("POST")
+	mx.HandleFunc("/api/questions", handlerContext.QuestionHandler).Methods("POST")
+	mx.HandleFunc("/upload", handlerContext.UploadHandler).Methods("POST")
 
 	// Path Routing Rules: Static Handlers
 	mx.HandleFunc("/github", StaticRedirectHandler("https://github.com/pashpashpash/vault"))
@@ -99,7 +119,7 @@ func main() {
 	}
 }
 
-/// Takes a response writer Meta config and URL and servers the react app with the correct metadata
+// / Takes a response writer Meta config and URL and servers the react app with the correct metadata
 func ServeIndex(w http.ResponseWriter, r *http.Request, meta serverutil.SiteConfig) {
 	//Here we handle the possible dev environments or pass the basic Hostpath with "/" at the end for the / metadata for each site
 	var currentHost string

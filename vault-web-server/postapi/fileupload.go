@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/pashpashpash/vault/chunk"
 	openai "github.com/sashabaranov/go-openai"
 )
 
@@ -20,7 +21,7 @@ type UploadResponse struct {
 const MAX_FILE_SIZE int64 = 3 << 20         // 3 MB
 const MAX_TOTAL_UPLOAD_SIZE int64 = 3 << 20 // 3 MB
 
-func UploadHandler(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Limit the request body size
 	r.Body = http.MaxBytesReader(w, r.Body, MAX_TOTAL_UPLOAD_SIZE)
@@ -44,7 +45,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("[UploadHandler] UUID=", uuid)
 
-	clientToUse := DEFAULT_OPENAI_CLIENT
+	clientToUse := ctx.openAIClient
 	if userProvidedOpenApiKey != "" {
 		log.Println("[UploadHandler] Using provided custom API key:", userProvidedOpenApiKey)
 		clientToUse = openai.NewClient(userProvidedOpenApiKey)
@@ -84,7 +85,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Check if the file is a PDF
 		if fileType == "application/pdf" {
-			fileContent, err = extractTextFromPDF(f, file.Size)
+			fileContent, err = chunk.ExtractTextFromPDF(f, file.Size)
 			if err != nil {
 				errMsg := "Error extracting text from PDF"
 				log.Println("[UploadHandler ERR]", errMsg, err)
@@ -93,7 +94,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 		} else {
-			fileContent, err = getTextFromFile(f)
+			fileContent, err = chunk.GetTextFromFile(f)
 			if err != nil {
 				errMsg := "Error reading file"
 				log.Println("[UploadHandler ERR]", errMsg, err)
@@ -108,8 +109,8 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		log.Printf("File Name: %s, File Type: %s, File Content (first 32 characters): %s\n", fileName, fileType, filePreview)
 
-		// Process the fileBytes into embeddings and store in Pinecone here
-		chunks, err := CreateChunks(fileContent, fileName)
+		// Process the fileBytes into embeddings and store in vector DB here
+		chunks, err := chunk.CreateChunks(fileContent, fileName)
 		if err != nil {
 			errMsg := "Error chunking file"
 			log.Println("[UploadHandler ERR]", errMsg, err)
@@ -130,17 +131,16 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Total embeddings: %d\n", len(embeddings))
 		fmt.Printf("Embeddings length: %d\n", len(embeddings[0]))
 
-		// Call the upsertEmbeddingsToPinecone function
-		err = upsertEmbeddingsToPinecone(embeddings, chunks, uuid)
+		err = ctx.vectorDB.UpsertEmbeddings(embeddings, chunks, uuid)
 		if err != nil {
-			errMsg := fmt.Sprintf("Error upserting embeddings to Pinecone: %v", err)
+			errMsg := fmt.Sprintf("Error upserting embeddings to vector DB: %v", err)
 			log.Println("[UploadHandler ERR]", errMsg)
 			responseData.NumFilesFailed++
 			responseData.FailedFileNames[fileName] = errMsg
 			continue
 		}
 
-		log.Println("Successfully added pinecone embeddings!")
+		log.Println("Successfully added vector DB embeddings!")
 
 		responseData.NumFilesSucceeded++
 		responseData.SuccessfulFileNames = append(responseData.SuccessfulFileNames, fileName)

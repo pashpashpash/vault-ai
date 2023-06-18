@@ -1,4 +1,4 @@
-package postapi
+package chunk
 
 import (
 	"errors"
@@ -94,7 +94,7 @@ func CreateChunks(fileContent string, title string) ([]Chunk, error) {
 	return chunks, nil
 }
 
-func getTextFromFile(f multipart.File) (string, error) {
+func GetTextFromFile(f multipart.File) (string, error) {
 	fileBytes, err := ioutil.ReadAll(f)
 	if err != nil {
 		return "", err
@@ -112,7 +112,7 @@ func getTextFromFile(f multipart.File) (string, error) {
 }
 
 // extract human-readable text from a given pdf with support for spaces/whitespace.
-func extractTextFromPDF(f multipart.File, fileSize int64) (string, error) {
+func ExtractTextFromPDF(f multipart.File, fileSize int64) (string, error) {
 	// Reset the file reader's position
 	_, err := f.Seek(0, io.SeekStart)
 	if err != nil {

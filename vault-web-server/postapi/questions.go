@@ -21,7 +21,7 @@ type Answer struct {
 }
 
 // Handle Requests For Question
-func QuestionHandler(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) QuestionHandler(w http.ResponseWriter, r *http.Request) {
 	form := new(form.QuestionForm)
 
 	if errs := FormParseVerify(form, "QuestionForm", w, r); errs != nil {
@@ -33,7 +33,7 @@ func QuestionHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("[QuestionHandler] UUID:", form.UUID)
 	log.Println("[QuestionHandler] ApiKey:", form.ApiKey)
 
-	clientToUse := DEFAULT_OPENAI_CLIENT
+	clientToUse := ctx.openAIClient
 	if form.ApiKey != "" {
 		log.Println("[QuestionHandler] Using provided custom API key:", form.ApiKey)
 		clientToUse = openai.NewClient(form.ApiKey)
@@ -48,15 +48,15 @@ func QuestionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println("[QuestionHandler] Question Embedding Length:", len(questionEmbedding))
 
-	// step 2: Query Pinecone using questionEmbedding to get context matches
-	matches, err := retrieve(questionEmbedding, 4, form.UUID)
+	// step 2: Query vector db using questionEmbedding to get context matches
+	matches, err := ctx.vectorDB.Retrieve(questionEmbedding, 4, form.UUID)
 	if err != nil {
-		log.Println("[QuestionHandler ERR] Pinecone query error\n", err.Error())
+		log.Println("[QuestionHandler ERR] Vector DB query error\n", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	log.Println("[QuestionHandler] Got matches from Pinecone:", matches)
+	log.Println("[QuestionHandler] Got matches from vector DB:", matches)
 
 	// Extract context text and titles from the matches
 	contexts := make([]Context, len(matches))
@@ -64,9 +64,9 @@ func QuestionHandler(w http.ResponseWriter, r *http.Request) {
 		contexts[i].Text = match.Metadata["text"]
 		contexts[i].Title = match.Metadata["title"]
 	}
-	log.Println("[QuestionHandler] Retrieved context from Pinecone:\n", contexts)
+	log.Println("[QuestionHandler] Retrieved context from vector DB:\n", contexts)
 
-	// step 3: Structure the prompt with a context section + question, using top x results from pinecone as the context
+	// step 3: Structure the prompt with a context section + question, using top x results from vector DB as the context
 	contextTexts := make([]string, len(contexts))
 	for i, context := range contexts {
 		contextTexts[i] = context.Text
