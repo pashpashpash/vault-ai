@@ -27,7 +27,7 @@ type Pinecone struct {
 	ApiKey   string
 }
 
-func New(apiKey string, endpoint string) (*Pinecone, error) {
+func New(endpoint string, apiKey string) (*Pinecone, error) {
 	return &Pinecone{
 		Endpoint: endpoint,
 		ApiKey:   apiKey,
