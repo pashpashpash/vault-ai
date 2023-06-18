@@ -72,6 +72,9 @@ func (ctx *HandlerContext) QuestionHandler(w http.ResponseWriter, r *http.Reques
 		contextTexts[i] = context.Text
 	}
 	prompt, err := buildPrompt(contextTexts, form.Question)
+	if prompt == "" {
+		prompt = form.Question
+	}
 	if err != nil {
 		log.Println("[QuestionHandler ERR] Error building prompt\n", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
