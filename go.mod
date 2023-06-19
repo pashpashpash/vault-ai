@@ -5,13 +5,16 @@ go 1.17
 require (
 	code.sajari.com/docconv v1.3.5
 	github.com/codegangsta/negroni v1.0.0
+	github.com/gabriel-vasile/mimetype v1.4.2
+	github.com/gen2brain/go-fitz v1.22.2
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/schema v1.2.0
 	github.com/neurosnap/sentences v1.1.2
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkoukk/tiktoken-go v0.1.0
+	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d
 	github.com/sashabaranov/go-openai v1.6.1
-	golang.org/x/text v0.3.6
+	golang.org/x/text v0.8.0
 )
 
 require (
@@ -34,6 +37,6 @@ require (
 	github.com/richardlehane/mscfb v1.0.3 // indirect
 	github.com/richardlehane/msoleps v1.0.3 // indirect
 	github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf // indirect
-	golang.org/x/net v0.0.0-20210503060351-7fd8e65b6420 // indirect
+	golang.org/x/net v0.8.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 )
