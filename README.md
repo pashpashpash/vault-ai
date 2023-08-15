@@ -152,3 +152,7 @@ I currently have the max individual file size set to 3MB. If you want to increas
 ### Supported Filetypes
 
 PDFs, .txt, .rtf, .docx, .epub, and plaintext.
+
+### New Pinecone Free Tier Restrictions
+
+Recently, Pinecone [limited the use of namespaces](https://github.com/langchain-ai/langchain/issues/7472) for free tier users. If you're on a newly created free tier, these restrictions will apply to you.
