@@ -1,8 +1,8 @@
 > 77,000,000 TOTAL TOKENS (FIXED CAP)
 
-Token Info: [2XRbBvD6Z9UEAXtWgJSBER94kR1YfTabdHSNQ4NkB9WF](https://explorer.solana.com/address/2XRbBvD6Z9UEAXtWgJSBER94kR1YfTabdHSNQ4NkB9WF)
+> Token Info: [2XRbBvD6Z9UEAXtWgJSBER94kR1YfTabdHSNQ4NkB9WF](https://explorer.solana.com/address/2XRbBvD6Z9UEAXtWgJSBER94kR1YfTabdHSNQ4NkB9WF)
 
-![VAULT_test_logo_512_maskable_6 (3) (1)](https://github.com/user-attachments/assets/78845dca-5531-4837-9c70-ebf50790387d)
+> ![VAULT_test_logo_512_maskable_6 (3) (1)](https://github.com/user-attachments/assets/78845dca-5531-4837-9c70-ebf50790387d)
 
 
 
