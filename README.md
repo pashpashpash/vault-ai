@@ -1,11 +1,3 @@
-> Announcement on X: https://x.com/pashmerepat/status/1883365161727336625
-
-> Token Info: [5Mfbop5McM9mpDJEkcmnbvesWNLx4Bi7tyyFyGbJpump](https://pump.fun/coin/5Mfbop5McM9mpDJEkcmnbvesWNLx4Bi7tyyFyGbJpump)
-
-> ![VAULT_test_logo_512_maskable_6 (3) (1)](https://github.com/user-attachments/assets/78845dca-5531-4837-9c70-ebf50790387d)
-
-
-
 # OP Vault
 
 OP Vault uses the OP Stack (OpenAI + Pinecone Vector Database) to enable users to upload their own custom knowledgebase files and ask questions about their contents.
